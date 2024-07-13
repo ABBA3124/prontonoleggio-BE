@@ -1,6 +1,7 @@
 package davideabbadessa.prontonoleggio_BE.entities;
 
 import davideabbadessa.prontonoleggio_BE.enums.Role;
+import davideabbadessa.prontonoleggio_BE.enums.Sesso;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,9 @@ public class Utente implements UserDetails {
     private String nome;
     private String cognome;
     private String eta;
+    @Enumerated(EnumType.STRING)
+    private Sesso sesso;
+    private String username;
     private String email;
     private String password;
     private String telefono;
