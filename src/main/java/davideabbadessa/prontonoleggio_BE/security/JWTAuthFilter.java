@@ -1,5 +1,8 @@
 package davideabbadessa.prontonoleggio_BE.security;
 
+import davideabbadessa.prontonoleggio_BE.entities.Utente;
+import davideabbadessa.prontonoleggio_BE.exceptions.UnauthorizedException;
+import davideabbadessa.prontonoleggio_BE.services.UtenteService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,28 +22,26 @@ import java.util.UUID;
 public class JWTAuthFilter extends OncePerRequestFilter {
 
     @Autowired
-    private davideabbadessa.U2_W3_D5_Final_Project_Gestione_Eventi_Test.security.JWTTools jwtTools;
+    private JWTTools jwtTools;
 
     @Autowired
-    private UserService userService;
+    private UtenteService utenteService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
+        if (authHeader == null || !authHeader.startsWith("Bearer "))
+            throw new UnauthorizedException("Inserisci correttamente il token");
         String accessToken = authHeader.substring(7);
         jwtTools.verifyToken(accessToken);
-        String userId = jwtTools.extractIdFromToken(accessToken);
-        User currentUser = userService.findById(UUID.fromString(userId));
 
+        String userId = jwtTools.extractIdFromToken(accessToken);
+        Utente currentUser = utenteService.getUtenteById(UUID.fromString(userId));
         Authentication authentication = new UsernamePasswordAuthenticationToken(currentUser, null, currentUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
     }
+
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
