@@ -1,10 +1,10 @@
 package davideabbadessa.prontonoleggio_BE.crontrollers;
 
 import davideabbadessa.prontonoleggio_BE.exceptions.BadRequestException;
-import davideabbadessa.prontonoleggio_BE.payloads.NuovoUtenteDTO;
-import davideabbadessa.prontonoleggio_BE.payloads.UtenteLoginDTO;
-import davideabbadessa.prontonoleggio_BE.payloads.UtenteLoginResponseDTO;
-import davideabbadessa.prontonoleggio_BE.payloads.UtenteResponseDTO;
+import davideabbadessa.prontonoleggio_BE.payloads.utente.NuovoUtenteDTO;
+import davideabbadessa.prontonoleggio_BE.payloads.utente.UtenteLoginDTO;
+import davideabbadessa.prontonoleggio_BE.payloads.utente.UtenteLoginResponseDTO;
+import davideabbadessa.prontonoleggio_BE.payloads.utente.UtenteResponseDTO;
 import davideabbadessa.prontonoleggio_BE.services.AuthService;
 import davideabbadessa.prontonoleggio_BE.services.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
