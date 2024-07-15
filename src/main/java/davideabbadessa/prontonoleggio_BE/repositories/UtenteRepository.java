@@ -1,6 +1,6 @@
 package davideabbadessa.prontonoleggio_BE.repositories;
 
-import davideabbadessa.prontonoleggio_BE.entities.Utente;
+import davideabbadessa.prontonoleggio_BE.entities.utente.Utente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
