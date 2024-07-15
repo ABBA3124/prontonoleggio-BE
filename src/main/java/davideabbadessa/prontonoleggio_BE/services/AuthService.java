@@ -1,8 +1,8 @@
 package davideabbadessa.prontonoleggio_BE.services;
 
-import davideabbadessa.prontonoleggio_BE.entities.Utente;
+import davideabbadessa.prontonoleggio_BE.entities.utente.Utente;
 import davideabbadessa.prontonoleggio_BE.exceptions.UnauthorizedException;
-import davideabbadessa.prontonoleggio_BE.payloads.UtenteLoginDTO;
+import davideabbadessa.prontonoleggio_BE.payloads.utente.UtenteLoginDTO;
 import davideabbadessa.prontonoleggio_BE.security.JWTTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
