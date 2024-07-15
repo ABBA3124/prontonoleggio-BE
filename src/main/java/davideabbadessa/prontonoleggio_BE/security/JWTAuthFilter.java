@@ -1,6 +1,6 @@
 package davideabbadessa.prontonoleggio_BE.security;
 
-import davideabbadessa.prontonoleggio_BE.entities.Utente;
+import davideabbadessa.prontonoleggio_BE.entities.utente.Utente;
 import davideabbadessa.prontonoleggio_BE.exceptions.UnauthorizedException;
 import davideabbadessa.prontonoleggio_BE.services.UtenteService;
 import jakarta.servlet.FilterChain;
