@@ -107,6 +107,13 @@ public class UtenteService {
         }
     }
 
+    // <-------------------------------------------- Delete Utente  -------------------------------------------->
+    public void deleteProfilo(UUID utenteId) {
+        Utente found = this.getUtenteById(utenteId);
+        utenteRepository.delete(found);
+    }
+
+
 }
 
 
