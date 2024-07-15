@@ -2,6 +2,7 @@ package davideabbadessa.prontonoleggio_BE.entities;
 
 import davideabbadessa.prontonoleggio_BE.enums.Role;
 import davideabbadessa.prontonoleggio_BE.enums.Sesso;
+import davideabbadessa.prontonoleggio_BE.payloads.NuovoUtenteDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +19,8 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-//@JsonIgnoreProperties({"password"})
+//@JsonIgnoreProperties({"password", "role", "authorities", "enabled", "accountNonExpired", "credentialsNonExpired", "accountNonLocked"})
+@Table(name = "utenti")
 public class Utente implements UserDetails {
 
     @Id
@@ -34,7 +37,7 @@ public class Utente implements UserDetails {
     private String password;
     private String telefono;
     private String indirizzo;
-    private int numeroCivico;
+    private String numeroCivico;
     private String citta;
     private String cap;
     private String provincia;
@@ -44,26 +47,27 @@ public class Utente implements UserDetails {
     private String patente;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private String avatar;
 
-    public Utente(String nome, String cognome, int eta, Sesso sesso, String username, String email, String password, String telefono, String indirizzo, int numeroCivico, String citta, String cap, String provincia, String nazione, LocalDate dataNascita, String codiceFiscale, String patente) {
-        this.nome = nome;
-        this.cognome = cognome;
-        this.eta = eta;
-        this.sesso = sesso;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.telefono = telefono;
-        this.indirizzo = indirizzo;
-        this.numeroCivico = numeroCivico;
-        this.citta = citta;
-        this.cap = cap;
-        this.provincia = provincia;
-        this.nazione = nazione;
-        this.dataNascita = dataNascita;
-        this.codiceFiscale = codiceFiscale;
-        this.patente = patente;
+    public Utente(NuovoUtenteDTO dto) {
+        this.nome = dto.nome();
+        this.cognome = dto.cognome();
+        this.sesso = dto.sesso();
+        this.username = dto.username();
+        this.email = dto.email();
+        this.password = dto.password();
+        this.telefono = dto.telefono();
+        this.indirizzo = dto.indirizzo();
+        this.numeroCivico = dto.numeroCivico();
+        this.citta = dto.citta();
+        this.cap = dto.cap();
+        this.provincia = dto.provincia();
+        this.nazione = dto.nazione();
+        this.dataNascita = dto.dataNascita();
+        this.codiceFiscale = dto.codiceFiscale();
+        this.patente = dto.patente();
         this.role = Role.ROLE_USER;
+        this.eta = Period.between(this.dataNascita, LocalDate.now()).getYears();
     }
 
 
