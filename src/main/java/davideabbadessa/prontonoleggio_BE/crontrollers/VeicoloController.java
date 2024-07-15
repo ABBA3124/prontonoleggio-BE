@@ -12,6 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/veicoli")
 @Validated
@@ -43,4 +45,19 @@ public class VeicoloController {
         Veicolo veicolo = veicoloService.salvaVeicolo(veicoloDTO);
         return new ResponseEntity<>(veicolo, HttpStatus.CREATED);
     }
+    //<--------------------------------------Start get all veicoli -------------------------------------->//
+    //<--------------------------------------Start Modifica Veicolo-------------------------------------->//
+    //<--------------------------------------Start Delete Veicolo-------------------------------------->//
+
+
+    //<--------------------------------------Start get veicolo by id -------------------------------------->//
+    @GetMapping("/{id}")
+    public ResponseEntity<Veicolo> getVeicoloById(@PathVariable UUID id) {
+        Veicolo veicolo = veicoloService.getVeicoloById(id);
+        return new ResponseEntity<>(veicolo, HttpStatus.OK);
+    }
+
+    //cerca veicoli
+    
+
 }
