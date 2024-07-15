@@ -10,6 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/utente")
@@ -18,25 +20,40 @@ public class UtenteController {
     @Autowired
     private UtenteService utenteService;
 
-
-    @GetMapping
-    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
-    public Page<Utente> getAllUtenti(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
-        return this.utenteService.getAllUtenti(page, size, sortBy);
-    }
-
-    // /me visualizza il mio profilo
+    // <-------------------------------------------- ROLE_USER -------------------------------------------->
     @GetMapping("/me")
     public Utente getProfilo(@AuthenticationPrincipal Utente currentAuthenticatedUtente) {
         return currentAuthenticatedUtente;
 
     }
 
-
-    //update informazioni del profilo
     @PutMapping("/me")
     public Utente updateProfilo(@AuthenticationPrincipal Utente currentAuthenticatedUtente, @Validated @RequestBody NuovoUtenteDTO body) {
         return this.utenteService.updateProfilo(currentAuthenticatedUtente.getId(), body);
+    }
+
+    @DeleteMapping("/me")
+    public void deleteProfilo(@AuthenticationPrincipal Utente currentAuthenticatedUtente) {
+        this.utenteService.deleteProfilo(currentAuthenticatedUtente.getId());
+    }
+
+    // <-------------------------------------------- ROLE_SUPERADMIN -------------------------------------------->
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+    public Page<Utente> getAllUtenti(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
+        return this.utenteService.getAllUtenti(page, size, sortBy);
+    }
+
+    @DeleteMapping("/elimina/{id}")
+    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+    public void deleteUtente(@PathVariable UUID id) {
+        this.utenteService.deleteProfilo(id);
+    }
+
+    @GetMapping("/cerca/{id}")
+    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+    public Utente getUtenteById(@PathVariable UUID id) {
+        return this.utenteService.getUtenteById(id);
     }
 
 }
