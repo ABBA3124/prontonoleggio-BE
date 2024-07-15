@@ -6,10 +6,13 @@ import davideabbadessa.prontonoleggio_BE.exceptions.NotFoundException;
 import davideabbadessa.prontonoleggio_BE.payloads.NuovoUtenteDTO;
 import davideabbadessa.prontonoleggio_BE.repositories.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -21,53 +24,46 @@ public class UtenteService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Metodo per ottenere tutti gli utenti presenti nel database
-    public List<Utente> getAllUtenti() {
-        return utenteRepository.findAll();
+    public Page<Utente> getAllUtenti(int pageNumber, int pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        return utenteRepository.findAll(pageable);
     }
 
-    // metodo cerca utente per id e se non lo trova lancia un'eccezione NotFoundException con l'id dell'utente non trovato
     public Utente getUtenteById(UUID id) {
         return utenteRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 
-    // metodo cerca utente per email e se non lo trova lancia un'eccezione NotFoundException con l'email dell'utente non trovato
     public Utente getUtenteByEmail(String email) {
         return utenteRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(email + " not found"));
     }
 
-    // metodo cerca utente per username e se non lo trova lancia un'eccezione NotFoundException con l'username dell'utente non trovato
     public Utente getUtenteByUsername(String username) {
         return utenteRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(username + " not found"));
     }
 
-    // metodo per salvare un utente nel database e ritornare l'utente salvato con l'id generato dal database e la password criptata con BCrypt (passwordEncoder)
-    public Utente saveUtente(NuovoUtenteDTO utenteDTO) {
-        if (utenteRepository.findByEmail(utenteDTO.email()).isEmpty()) {
-            Utente nuovoUtente = new Utente(
-                    utenteDTO.nome(),
-                    utenteDTO.cognome(),
-                    utenteDTO.eta(),
-                    utenteDTO.sesso(),
-                    utenteDTO.username(),
-                    utenteDTO.email(),
-                    passwordEncoder.encode(utenteDTO.password()),
-                    utenteDTO.telefono(),
-                    utenteDTO.indirizzo(),
-                    utenteDTO.numeroCivico(),
-                    utenteDTO.citta(),
-                    utenteDTO.cap(),
-                    utenteDTO.provincia(),
-                    utenteDTO.nazione(),
-                    utenteDTO.dataNascita(),
-                    utenteDTO.codiceFiscale(),
-                    utenteDTO.patente()
-            );
-            return utenteRepository.save(nuovoUtente);
-        } else {
-            throw new BadRequestException(utenteDTO.email() + "già in uso");
-        }
-    }
 
+    public Utente saveUtente(NuovoUtenteDTO utenteDTO) {
+        if (utenteRepository.findByEmail(utenteDTO.email()).isPresent()) {
+            throw new BadRequestException("Email: " + utenteDTO.email() + " già in uso");
+        }
+        if (utenteRepository.findByUsername(utenteDTO.username()).isPresent()) {
+            throw new BadRequestException("Username: " + utenteDTO.username() + " già in uso");
+        }
+        if (utenteRepository.findByPatente(utenteDTO.patente()).isPresent()) {
+            throw new BadRequestException("Patente: " + utenteDTO.patente() + " già in uso");
+        }
+        if (utenteRepository.findByCodiceFiscale(utenteDTO.codiceFiscale()).isPresent()) {
+            throw new BadRequestException("Codice Fiscale: " + utenteDTO.codiceFiscale() + " già in uso");
+        }
+        if (utenteRepository.findByTelefono(utenteDTO.telefono()).isPresent()) {
+            throw new BadRequestException("Numero di telefono: " + utenteDTO.telefono() + " già in uso");
+        }
+
+        Utente nuovoUtente = new Utente(utenteDTO);
+        nuovoUtente.setPassword(passwordEncoder.encode(utenteDTO.password()));
+        nuovoUtente.setAvatar("https://ui-avatars.com/api/?name=" + nuovoUtente.getNome() + "+" + nuovoUtente.getCognome() + "&background=random&color=fff");
+        return utenteRepository.save(nuovoUtente);
+    }
 }
+
 
