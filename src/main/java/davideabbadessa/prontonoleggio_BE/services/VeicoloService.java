@@ -5,6 +5,7 @@ import davideabbadessa.prontonoleggio_BE.entities.veicolo.Moto;
 import davideabbadessa.prontonoleggio_BE.entities.veicolo.Veicolo;
 import davideabbadessa.prontonoleggio_BE.enums.veicolo.Disponibilita;
 import davideabbadessa.prontonoleggio_BE.enums.veicolo.TipoVeicolo;
+import davideabbadessa.prontonoleggio_BE.exceptions.NotFoundException;
 import davideabbadessa.prontonoleggio_BE.payloads.veicolo.VeicoloDTO;
 import davideabbadessa.prontonoleggio_BE.repositories.VeicoloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class VeicoloService {
 
     @Autowired
     private VeicoloRepository veicoloRepository;
+
 
     public Page<Veicolo> getVeicoliByDisponibilita(Disponibilita disponibilita, int pageNumber, int pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
@@ -75,6 +79,10 @@ public class VeicoloService {
         veicolo.setImmagini(veicoloDTO.immagini());
 
         return veicoloRepository.save(veicolo);
+    }
+
+    public Veicolo getVeicoloById(UUID id) {
+        return veicoloRepository.findById(id).orElseThrow(() -> new NotFoundException("Veicolo non trovato"));
     }
 
 }
