@@ -42,7 +42,6 @@ public class UtenteService {
         return utenteRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(username + " not found"));
     }
 
-
     // <-------------------------------------------- Salva Utente  -------------------------------------------->
     public Utente saveUtente(NuovoUtenteDTO utenteDTO) {
         validateUtente(null, utenteDTO);
@@ -107,12 +106,34 @@ public class UtenteService {
         }
     }
 
-    // <-------------------------------------------- Delete Utente  -------------------------------------------->
-    public void deleteProfilo(UUID utenteId) {
-        Utente found = this.getUtenteById(utenteId);
-        utenteRepository.delete(found);
+    // <-------------------------------------------- ROLE_USER  -------------------------------------------->
+
+    private boolean verifyPassword(Utente utente, String password) {
+        return passwordEncoder.matches(password, utente.getPassword());
     }
 
+    // <-------------------------------------------- Delete Utente ROLE_USER  -------------------------------------------->
+    public void deleteProfilo(UUID utenteId, String password) {
+        Utente utente = getUtenteById(utenteId);
+
+        if (verifyPassword(utente, password)) {
+            utenteRepository.delete(utente);
+        } else {
+            throw new BadRequestException("Password errata.");
+        }
+    }
+
+    // <-------------------------------------------- Delete Utente ROLE_SUPERADMIN  -------------------------------------------->
+    public void deleteProfiloAdmin(UUID superAdminId, String password, UUID targetUserId) {
+        Utente superAdmin = getUtenteById(superAdminId);
+        Utente targetUser = getUtenteById(targetUserId);
+
+        if (verifyPassword(superAdmin, password)) {
+            utenteRepository.delete(targetUser);
+        } else {
+            throw new BadRequestException("Password errata.");
+        }
+    }
 
 }
 

@@ -1,15 +1,19 @@
 package davideabbadessa.prontonoleggio_BE.crontrollers;
 
 import davideabbadessa.prontonoleggio_BE.entities.utente.Utente;
+import davideabbadessa.prontonoleggio_BE.exceptions.BadRequestException;
 import davideabbadessa.prontonoleggio_BE.payloads.utente.NuovoUtenteDTO;
 import davideabbadessa.prontonoleggio_BE.services.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -19,6 +23,7 @@ public class UtenteController {
 
     @Autowired
     private UtenteService utenteService;
+
 
     // <-------------------------------------------- ROLE_USER -------------------------------------------->
     @GetMapping("/me")
@@ -33,9 +38,16 @@ public class UtenteController {
     }
 
     @DeleteMapping("/me")
-    public void deleteProfilo(@AuthenticationPrincipal Utente currentAuthenticatedUtente) {
-        this.utenteService.deleteProfilo(currentAuthenticatedUtente.getId());
+    public ResponseEntity<String> deleteProfilo(@AuthenticationPrincipal Utente currentAuthenticatedUtente, @RequestBody Map<String, String> body) {
+        String password = body.get("password");
+        try {
+            utenteService.deleteProfilo(currentAuthenticatedUtente.getId(), password);
+            return ResponseEntity.ok("Profilo eliminato con successo");
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
+
 
     // <-------------------------------------------- ROLE_SUPERADMIN -------------------------------------------->
     @GetMapping("/all")
@@ -46,8 +58,14 @@ public class UtenteController {
 
     @DeleteMapping("/elimina/{id}")
     @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
-    public void deleteUtente(@PathVariable UUID id) {
-        this.utenteService.deleteProfilo(id);
+    public ResponseEntity<String> deleteProfiloById(@PathVariable UUID id, @AuthenticationPrincipal Utente currentAuthenticatedUtente, @RequestBody Map<String, String> body) {
+        String password = body.get("password");
+        try {
+            utenteService.deleteProfiloAdmin(currentAuthenticatedUtente.getId(), password, id);
+            return ResponseEntity.ok("Profilo eliminato con successo");
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
 
     @GetMapping("/cerca/{id}")
