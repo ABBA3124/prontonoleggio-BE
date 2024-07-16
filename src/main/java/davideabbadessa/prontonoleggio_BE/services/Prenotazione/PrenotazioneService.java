@@ -48,8 +48,12 @@ public class PrenotazioneService {
         return prenotazioneRepository.save(prenotazione);
     }
 
-    private boolean isVeicoloDisponibile(UUID veicoloId, LocalDate dataInizio, LocalDate dataFine) {
+    public boolean isVeicoloDisponibile(UUID veicoloId, LocalDate dataInizio, LocalDate dataFine) {
         List<Prenotazione> prenotazioniSovrapposte = prenotazioneRepository.findPrenotazioniSovrapposte(veicoloId, dataInizio, dataFine);
         return prenotazioniSovrapposte.isEmpty();
+    }
+
+    public List<Prenotazione> getPrenotazioniByUtente(UUID utenteId) {
+        return prenotazioneRepository.findByUtenteId(utenteId);
     }
 }
