@@ -45,4 +45,21 @@ public class PrenotazioneController {
         List<Prenotazione> prenotazioni = prenotazioneService.getPrenotazioniByUtente(currentAuthenticatedUtente.getId());
         return new ResponseEntity<>(prenotazioni, HttpStatus.OK);
     }
+
+    @PutMapping("/modifica/{id}")
+    public ResponseEntity<Prenotazione> modificaPrenotazione(
+            @PathVariable UUID id,
+            @Validated @RequestBody PrenotazioneDTO prenotazioneDTO,
+            @AuthenticationPrincipal Utente currentAuthenticatedUtente) {
+        Prenotazione prenotazione = prenotazioneService.modificaPrenotazione(id, prenotazioneDTO, currentAuthenticatedUtente);
+        return new ResponseEntity<>(prenotazione, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/cancella/{id}")
+    public ResponseEntity<Void> cancellaPrenotazione(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal Utente currentAuthenticatedUtente) {
+        prenotazioneService.cancellaPrenotazione(id, currentAuthenticatedUtente);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

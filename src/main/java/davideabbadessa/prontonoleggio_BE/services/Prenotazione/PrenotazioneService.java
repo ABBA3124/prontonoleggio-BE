@@ -10,6 +10,7 @@ import davideabbadessa.prontonoleggio_BE.repositories.Prenotazione.PrenotazioneR
 import davideabbadessa.prontonoleggio_BE.repositories.UtenteRepository;
 import davideabbadessa.prontonoleggio_BE.repositories.VeicoloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,7 +35,6 @@ public class PrenotazioneService {
         Utente utente = utenteRepository.findById(prenotazioneDTO.utenteId())
                                         .orElseThrow(() -> new NotFoundException("Utente non trovato"));
 
-        // Verifica disponibilità veicolo
         if (!isVeicoloDisponibile(veicolo.getId(), prenotazioneDTO.dataInizio(), prenotazioneDTO.dataFine())) {
             throw new BadRequestException("Veicolo non disponibile per le date selezionate");
         }
@@ -55,5 +55,41 @@ public class PrenotazioneService {
 
     public List<Prenotazione> getPrenotazioniByUtente(UUID utenteId) {
         return prenotazioneRepository.findByUtenteId(utenteId);
+    }
+
+    public Prenotazione modificaPrenotazione(UUID id, PrenotazioneDTO prenotazioneDTO, Utente currentAuthenticatedUtente) {
+        Prenotazione prenotazione = prenotazioneRepository.findById(id)
+                                                          .orElseThrow(() -> new NotFoundException("Prenotazione non trovata"));
+
+        if (!prenotazione.getUtente()
+                         .getId()
+                         .equals(currentAuthenticatedUtente.getId()) && !currentAuthenticatedUtente.getAuthorities()
+                                                                                                   .contains(new SimpleGrantedAuthority("ROLE_SUPERADMIN"))) {
+            throw new BadRequestException("Non sei autorizzato a modificare questa prenotazione");
+        }
+
+        if (!isVeicoloDisponibile(prenotazione.getVeicolo()
+                                              .getId(), prenotazioneDTO.dataInizio(), prenotazioneDTO.dataFine())) {
+            throw new BadRequestException("Veicolo non disponibile per le nuove date selezionate");
+        }
+
+        prenotazione.setDataInizio(prenotazioneDTO.dataInizio());
+        prenotazione.setDataFine(prenotazioneDTO.dataFine());
+
+        return prenotazioneRepository.save(prenotazione);
+    }
+
+    public void cancellaPrenotazione(UUID id, Utente currentAuthenticatedUtente) {
+        Prenotazione prenotazione = prenotazioneRepository.findById(id)
+                                                          .orElseThrow(() -> new NotFoundException("Prenotazione non trovata"));
+
+        if (!prenotazione.getUtente()
+                         .getId()
+                         .equals(currentAuthenticatedUtente.getId()) && !currentAuthenticatedUtente.getAuthorities()
+                                                                                                   .contains(new SimpleGrantedAuthority("ROLE_SUPERADMIN"))) {
+            throw new BadRequestException("Non sei autorizzato a cancellare questa prenotazione");
+        }
+
+        prenotazioneRepository.delete(prenotazione);
     }
 }
