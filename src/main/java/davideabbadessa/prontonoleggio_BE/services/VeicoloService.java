@@ -26,12 +26,13 @@ public class VeicoloService {
     private VeicoloRepository veicoloRepository;
 
 
+    // <--------------------------------------Filtra Veicolo in base alla disponibilità enum-------------------------------------->
     public Page<Veicolo> getVeicoliByDisponibilita(Disponibilita disponibilita, int pageNumber, int pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
         return veicoloRepository.findByDisponibilita(disponibilita, pageable);
     }
 
-    // salvaVeicolo
+    // <--------------------------------------Salva Veicolo-------------------------------------->
     public Veicolo salvaVeicolo(VeicoloDTO veicoloDTO) {
         Veicolo veicolo;
 
@@ -83,15 +84,75 @@ public class VeicoloService {
         return veicoloRepository.save(veicolo);
     }
 
+    // <--------------------------------------Veicolo by ID-------------------------------------->
     public Veicolo getVeicoloById(UUID id) {
         return veicoloRepository.findById(id).orElseThrow(() -> new NotFoundException("Veicolo non trovato"));
     }
 
+    // <--------------------------------------Ricerca Veicoli in base a parametri di filtro-------------------------------------->
     public Page<Veicolo> searchVeicoli(Specification<Veicolo> spec, Pageable pageable) {
         return veicoloRepository.findAll(spec, pageable);
     }
 
+    // <--------------------------------------Get All Veicoli-------------------------------------->
     public List<Veicolo> GetAllVeicoli() {
         return veicoloRepository.findAll();
     }
+
+    // <--------------------------------------Delete Veicoli by id-------------------------------------->
+    public void deleteVeicolo(UUID id) {
+        veicoloRepository.deleteById(id);
+    }
+
+    // <--------------------------------------Modifica Veicolo-------------------------------------->
+    public Veicolo modificaVeicolo(UUID id, VeicoloDTO veicoloDTO) {
+        Veicolo veicolo = getVeicoloById(id);
+
+        if (veicoloDTO.tipoVeicolo() == TipoVeicolo.AUTO && veicolo instanceof Auto) {
+            Auto auto = (Auto) veicolo;
+            auto.setMotorizzazione(veicoloDTO.motorizzazione());
+            auto.setTrasmissione(veicoloDTO.trasmissione());
+            auto.setTrazione(veicoloDTO.trazione());
+            auto.setPorte(veicoloDTO.porte());
+            auto.setCapacitaBagagliaio(veicoloDTO.capacitaBagagliaio());
+            auto.setAirbag(veicoloDTO.airbag());
+            auto.setAbs(veicoloDTO.abs());
+            auto.setControlloStabilita(veicoloDTO.controlloStabilita());
+            auto.setAriaCondizionata(veicoloDTO.ariaCondizionata());
+            auto.setSistemaNavigazione(veicoloDTO.sistemaNavigazione());
+            auto.setSistemaAudio(veicoloDTO.sistemaAudio());
+            auto.setBluetooth(veicoloDTO.bluetooth());
+            auto.setSediliRiscaldati(veicoloDTO.sediliRiscaldati());
+        } else if (veicoloDTO.tipoVeicolo() == TipoVeicolo.MOTO && veicolo instanceof Moto) {
+            Moto moto = (Moto) veicolo;
+            moto.setBauletto(veicoloDTO.bauletto());
+            moto.setParabrezza(veicoloDTO.parabrezza());
+            moto.setAbs(veicoloDTO.abs());
+            moto.setControlloTrattamento(veicoloDTO.controlloTrattamento());
+        } else {
+            throw new IllegalArgumentException("Tipo veicolo non supportato o mismatch con l'entità veicolo esistente");
+        }
+        veicolo.setMarca(veicoloDTO.marca());
+        veicolo.setModello(veicoloDTO.modello());
+        veicolo.setAnno(veicoloDTO.anno());
+        veicolo.setTarga(veicoloDTO.targa());
+        veicolo.setTipoVeicolo(veicoloDTO.tipoVeicolo());
+        veicolo.setCategoria(veicoloDTO.categoria());
+        veicolo.setCilindrata(veicoloDTO.cilindrata());
+        veicolo.setPotenza(veicoloDTO.potenza());
+        veicolo.setConsumoCarburante(veicoloDTO.consumoCarburante());
+        veicolo.setPosti(veicoloDTO.posti());
+        veicolo.setTariffaGiornaliera(veicoloDTO.tariffaGiornaliera());
+        veicolo.setDisponibilita(veicoloDTO.disponibilita());
+        veicolo.setChilometraggio(veicoloDTO.chilometraggio());
+        veicolo.setPosizione(veicoloDTO.posizione());
+        veicolo.setDocumentiAssicurativi(veicoloDTO.documentiAssicurativi());
+        veicolo.setRevisione(veicoloDTO.revisione());
+        veicolo.setImmagini(veicoloDTO.immagini());
+
+        return veicoloRepository.save(veicolo);
+
+    }
 }
+
+

@@ -1,4 +1,4 @@
-package davideabbadessa.prontonoleggio_BE.crontrollers;
+package davideabbadessa.prontonoleggio_BE.controllers;
 
 import davideabbadessa.prontonoleggio_BE.components.VeicoloSpecification;
 import davideabbadessa.prontonoleggio_BE.entities.veicolo.Veicolo;
@@ -30,49 +30,8 @@ public class VeicoloController {
     @Autowired
     private VeicoloSpecification veicoloSpecification;
 
-    //<--------------------------------------Filtra Per Diponibilità-------------------------------------->//
-    @GetMapping("/disponibilita/disponibili")
-    public Page<Veicolo> getVeicoliDisponibili(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
-        return veicoloService.getVeicoliByDisponibilita(Disponibilita.DISPONIBILE, page, size, sortBy);
-    }
-
-    @GetMapping("/disponibilita/non-disponibili")
-    public Page<Veicolo> getVeicoliNonDisponibili(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
-        return veicoloService.getVeicoliByDisponibilita(Disponibilita.NON_DISPONIBILE, page, size, sortBy);
-    }
-
-    @GetMapping("/disponibilita/manutenzione")
-    public Page<Veicolo> getVeicoliInManutenzione(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
-        return veicoloService.getVeicoliByDisponibilita(Disponibilita.MANUTENZIONE, page, size, sortBy);
-    }
-
-    //<--------------------------------------Salva Veicolo-------------------------------------->//
-    @PostMapping("/salva")
-    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
-    public ResponseEntity<Veicolo> salvaVeicolo(@Validated @RequestBody VeicoloDTO veicoloDTO) {
-        Veicolo veicolo = veicoloService.salvaVeicolo(veicoloDTO);
-        return new ResponseEntity<>(veicolo, HttpStatus.CREATED);
-    }
-
-    //<--------------------------------------get all veicoli-------------------------------------->//
-    @GetMapping
-    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
-    public List<Veicolo> getAllVeicoli() {
-        return veicoloService.GetAllVeicoli();
-    }
-    //<--------------------------------------Modifica Veicolo-------------------------------------->//
-    //<--------------------------------------Delete Veicolo-------------------------------------->//
-
-
-    //<--------------------------------------get veicolo by id -------------------------------------->//
-    @GetMapping("/{id}")
-    public ResponseEntity<Veicolo> getVeicoloById(@PathVariable UUID id) {
-        Veicolo veicolo = veicoloService.getVeicoloById(id);
-        return new ResponseEntity<>(veicolo, HttpStatus.OK);
-    }
-
-    //<--------------------------------------Ricerca Veicolo-------------------------------------->//
-    //cerca veicoli
+    // <--------------------------------------Ricerca Veicoli in base a parametri di filtro-------------------------------------->
+    // Questo metodo consente di cercare veicoli basandosi su diversi parametri di filtro facoltativi:
     @GetMapping("/search")
     public ResponseEntity<Page<Veicolo>> searchVeicoli(
             @RequestParam(required = false) String marca,
@@ -99,5 +58,71 @@ public class VeicoloController {
         return new ResponseEntity<>(veicoli, HttpStatus.OK);
     }
 
+    // <--------------------------------------Filtra Veicolo Per Disponibilità-------------------------------------->
+    @GetMapping("/disponibilita/disponibili")
+    public Page<Veicolo> getVeicoliDisponibili(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy
+    ) {
+        return veicoloService.getVeicoliByDisponibilita(Disponibilita.DISPONIBILE, page, size, sortBy);
+    }
+
+    @GetMapping("/disponibilita/non-disponibili")
+    public Page<Veicolo> getVeicoliNonDisponibili(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy
+    ) {
+        return veicoloService.getVeicoliByDisponibilita(Disponibilita.NON_DISPONIBILE, page, size, sortBy);
+    }
+
+    @GetMapping("/disponibilita/manutenzione")
+    public Page<Veicolo> getVeicoliInManutenzione(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy
+    ) {
+        return veicoloService.getVeicoliByDisponibilita(Disponibilita.MANUTENZIONE, page, size, sortBy);
+    }
+
+    // <--------------------------------------GET Veicolo by ID-------------------------------------->
+    @GetMapping("/{id}")
+    public ResponseEntity<Veicolo> getVeicoloById(@PathVariable UUID id) {
+        Veicolo veicolo = veicoloService.getVeicoloById(id);
+        return new ResponseEntity<>(veicolo, HttpStatus.OK);
+    }
+
+    // <--------------------------------------Salva Veicolo-------------------------------------->
+    @PostMapping("/salva")
+    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+    public ResponseEntity<Veicolo> salvaVeicolo(@Validated @RequestBody VeicoloDTO veicoloDTO) {
+        Veicolo veicolo = veicoloService.salvaVeicolo(veicoloDTO);
+        return new ResponseEntity<>(veicolo, HttpStatus.CREATED);
+    }
+
+    // <--------------------------------------Get All Veicoli-------------------------------------->
+    @GetMapping
+    public List<Veicolo> getAllVeicoli() {
+        return veicoloService.GetAllVeicoli();
+    }
+
+    // <--------------------------------------Modifica Veicolo-------------------------------------->
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+    public ResponseEntity<Veicolo> updateVeicolo(
+            @PathVariable UUID id,
+            @Validated @RequestBody VeicoloDTO veicoloDTO
+    ) {
+        Veicolo veicolo = veicoloService.modificaVeicolo(id, veicoloDTO);
+        return new ResponseEntity<>(veicolo, HttpStatus.OK);
+    }
+
+    // <--------------------------------------Delete Veicolo-------------------------------------->
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+    public void deleteVeicolo(@PathVariable UUID id) {
+        veicoloService.deleteVeicolo(id);
+    }
 
 }
