@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -90,4 +91,7 @@ public class VeicoloService {
         return veicoloRepository.findAll(spec, pageable);
     }
 
+    public List<Veicolo> GetAllVeicoli() {
+        return veicoloRepository.findAll();
+    }
 }

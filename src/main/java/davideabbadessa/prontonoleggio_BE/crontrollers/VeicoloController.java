@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -52,7 +53,13 @@ public class VeicoloController {
         Veicolo veicolo = veicoloService.salvaVeicolo(veicoloDTO);
         return new ResponseEntity<>(veicolo, HttpStatus.CREATED);
     }
+
     //<--------------------------------------get all veicoli-------------------------------------->//
+    @GetMapping
+    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+    public List<Veicolo> getAllVeicoli() {
+        return veicoloService.GetAllVeicoli();
+    }
     //<--------------------------------------Modifica Veicolo-------------------------------------->//
     //<--------------------------------------Delete Veicolo-------------------------------------->//
 
