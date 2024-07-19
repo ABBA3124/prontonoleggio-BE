@@ -15,4 +15,8 @@ public interface PrenotazioneRepository extends JpaRepository<Prenotazione, UUID
     List<Prenotazione> findPrenotazioniSovrapposte(UUID veicoloId, LocalDate dataInizio, LocalDate dataFine);
 
     List<Prenotazione> findByUtenteId(UUID utenteId);
+
+    @Query("SELECT DISTINCT p.veicolo.id FROM Prenotazione p WHERE p.dataFine >= :dataInizio AND p.dataInizio <= :dataFine")
+    List<UUID> findVeicoliNonDisponibili(LocalDate dataInizio, LocalDate dataFine);
+
 }
