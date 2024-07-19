@@ -3,6 +3,7 @@ package davideabbadessa.prontonoleggio_BE.services;
 import davideabbadessa.prontonoleggio_BE.entities.utente.Utente;
 import davideabbadessa.prontonoleggio_BE.exceptions.BadRequestException;
 import davideabbadessa.prontonoleggio_BE.exceptions.NotFoundException;
+import davideabbadessa.prontonoleggio_BE.payloads.utente.ModificaUtenteDTO;
 import davideabbadessa.prontonoleggio_BE.payloads.utente.NuovoUtenteDTO;
 import davideabbadessa.prontonoleggio_BE.repositories.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,18 @@ public class UtenteService {
     }
 
     public Utente getUtenteById(UUID id) {
-        return utenteRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        return utenteRepository.findById(id)
+                               .orElseThrow(() -> new NotFoundException(id));
     }
 
     public Utente getUtenteByEmail(String email) {
-        return utenteRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(email + " not found"));
+        return utenteRepository.findByEmail(email)
+                               .orElseThrow(() -> new NotFoundException(email + " not found"));
     }
 
     public Utente getUtenteByUsername(String username) {
-        return utenteRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(username + " not found"));
+        return utenteRepository.findByUsername(username)
+                               .orElseThrow(() -> new NotFoundException(username + " not found"));
     }
 
     // <-------------------------------------------- Salva Utente  -------------------------------------------->
@@ -47,21 +51,19 @@ public class UtenteService {
         validateUtente(null, utenteDTO);
         Utente nuovoUtente = new Utente(utenteDTO);
         nuovoUtente.setPassword(passwordEncoder.encode(utenteDTO.password()));
-        nuovoUtente.setAvatar("https://ui-avatars.com/api/?name=" + nuovoUtente.getNome() + "+" + nuovoUtente.getCognome() + "&background=random&color=fff");
+        nuovoUtente.setAvatar("https://ui-avatars.com/api/?name=" + nuovoUtente.getNome() + "+" + nuovoUtente.getCognome() + "&background=1E90FF&color=fff");
         return utenteRepository.save(nuovoUtente);
     }
 
     // <-------------------------------------------- Update Utente  -------------------------------------------->
-    public Utente updateProfilo(UUID utenteId, NuovoUtenteDTO body) {
-        validateUtente(utenteId, body);
+    public Utente updateProfilo(UUID utenteId, ModificaUtenteDTO body) {
+        validateUtente2(utenteId, body);
         Utente found = this.getUtenteById(utenteId);
 
         found.setUsername(body.username());
         found.setEmail(body.email());
-        found.setPassword(passwordEncoder.encode(body.password()));
         found.setNome(body.nome());
         found.setCognome(body.cognome());
-        found.setSesso(body.sesso());
         found.setTelefono(body.telefono());
         found.setIndirizzo(body.indirizzo());
         found.setNumeroCivico(body.numeroCivico());
@@ -69,9 +71,6 @@ public class UtenteService {
         found.setCap(body.cap());
         found.setProvincia(body.provincia());
         found.setNazione(body.nazione());
-        found.setDataNascita(body.dataNascita());
-        found.setCodiceFiscale(body.codiceFiscale());
-        found.setPatente(body.patente());
         found.setAvatar("https://ui-avatars.com/api/?name=" + body.nome() + "+" + body.cognome());
 
         return utenteRepository.save(found);
@@ -80,28 +79,55 @@ public class UtenteService {
     // <-------------------------------------------- Validazione Utente  -------------------------------------------->
     private void validateUtente(UUID userId, NuovoUtenteDTO utenteDTO) {
         if (utenteRepository.findByEmail(utenteDTO.email())
-                .filter(existingUser -> !existingUser.getId().equals(userId))
-                .isPresent()) {
+                            .filter(existingUser -> !existingUser.getId()
+                                                                 .equals(userId))
+                            .isPresent()) {
             throw new BadRequestException("Email: " + utenteDTO.email() + " già in uso");
         }
         if (utenteRepository.findByUsername(utenteDTO.username())
-                .filter(existingUser -> !existingUser.getId().equals(userId))
-                .isPresent()) {
+                            .filter(existingUser -> !existingUser.getId()
+                                                                 .equals(userId))
+                            .isPresent()) {
             throw new BadRequestException("Username: " + utenteDTO.username() + " già in uso");
         }
         if (utenteRepository.findByPatente(utenteDTO.patente())
-                .filter(existingUser -> !existingUser.getId().equals(userId))
-                .isPresent()) {
+                            .filter(existingUser -> !existingUser.getId()
+                                                                 .equals(userId))
+                            .isPresent()) {
             throw new BadRequestException("Patente: " + utenteDTO.patente() + " già in uso");
         }
         if (utenteRepository.findByCodiceFiscale(utenteDTO.codiceFiscale())
-                .filter(existingUser -> !existingUser.getId().equals(userId))
-                .isPresent()) {
+                            .filter(existingUser -> !existingUser.getId()
+                                                                 .equals(userId))
+                            .isPresent()) {
             throw new BadRequestException("Codice Fiscale: " + utenteDTO.codiceFiscale() + " già in uso");
         }
         if (utenteRepository.findByTelefono(utenteDTO.telefono())
-                .filter(existingUser -> !existingUser.getId().equals(userId))
-                .isPresent()) {
+                            .filter(existingUser -> !existingUser.getId()
+                                                                 .equals(userId))
+                            .isPresent()) {
+            throw new BadRequestException("Numero di telefono: " + utenteDTO.telefono() + " già in uso");
+        }
+    }
+
+    // <-------------------------------------------- Validazione Utente  -------------------------------------------->
+    private void validateUtente2(UUID userId, ModificaUtenteDTO utenteDTO) {
+        if (utenteRepository.findByEmail(utenteDTO.email())
+                            .filter(existingUser -> !existingUser.getId()
+                                                                 .equals(userId))
+                            .isPresent()) {
+            throw new BadRequestException("Email: " + utenteDTO.email() + " già in uso");
+        }
+        if (utenteRepository.findByUsername(utenteDTO.username())
+                            .filter(existingUser -> !existingUser.getId()
+                                                                 .equals(userId))
+                            .isPresent()) {
+            throw new BadRequestException("Username: " + utenteDTO.username() + " già in uso");
+        }
+        if (utenteRepository.findByTelefono(utenteDTO.telefono())
+                            .filter(existingUser -> !existingUser.getId()
+                                                                 .equals(userId))
+                            .isPresent()) {
             throw new BadRequestException("Numero di telefono: " + utenteDTO.telefono() + " già in uso");
         }
     }
