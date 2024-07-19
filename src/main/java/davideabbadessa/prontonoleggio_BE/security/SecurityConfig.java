@@ -30,7 +30,8 @@ public class SecurityConfig {
         httpSecurity.csrf(http -> http.disable());
         httpSecurity.sessionManagement(http -> http.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         httpSecurity.cors(Customizer.withDefaults());
-        httpSecurity.authorizeHttpRequests(http -> http.requestMatchers("/**").permitAll());
+        httpSecurity.authorizeHttpRequests(http -> http.requestMatchers("/**")
+                                                       .permitAll());
         return httpSecurity.build();
     }
 
@@ -42,7 +43,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://mywonderfulfe.com"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
 
