@@ -7,6 +7,7 @@ import davideabbadessa.prontonoleggio_BE.enums.veicolo.Disponibilita;
 import davideabbadessa.prontonoleggio_BE.enums.veicolo.TipoVeicolo;
 import davideabbadessa.prontonoleggio_BE.exceptions.NotFoundException;
 import davideabbadessa.prontonoleggio_BE.payloads.veicolo.VeicoloDTO;
+import davideabbadessa.prontonoleggio_BE.repositories.Prenotazione.PrenotazioneRepository;
 import davideabbadessa.prontonoleggio_BE.repositories.VeicoloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,12 +27,16 @@ public class VeicoloService {
     @Autowired
     private VeicoloRepository veicoloRepository;
 
+    @Autowired
+    private PrenotazioneRepository prenotazioneRepository;
+
 
     // <--------------------------------------Filtra Veicolo in base alla disponibilità enum-------------------------------------->
     public Page<Veicolo> getVeicoliByDisponibilita(Disponibilita disponibilita, int pageNumber, int pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
         return veicoloRepository.findByDisponibilita(disponibilita, pageable);
     }
+
 
     // <--------------------------------------Salva Veicolo-------------------------------------->
     public Veicolo salvaVeicolo(VeicoloDTO veicoloDTO) {
@@ -86,12 +92,29 @@ public class VeicoloService {
 
     // <--------------------------------------Veicolo by ID-------------------------------------->
     public Veicolo getVeicoloById(UUID id) {
-        return veicoloRepository.findById(id).orElseThrow(() -> new NotFoundException("Veicolo non trovato"));
+        return veicoloRepository.findById(id)
+                                .orElseThrow(() -> new NotFoundException("Veicolo non trovato"));
     }
 
     // <--------------------------------------Ricerca Veicoli in base a parametri di filtro-------------------------------------->
-    public Page<Veicolo> searchVeicoli(Specification<Veicolo> spec, Pageable pageable) {
+    public Page<Veicolo> searchVeicoli(Specification<Veicolo> spec, LocalDate dataInizio, LocalDate dataFine, Pageable pageable) {
+        if (dataInizio != null && dataFine != null) {
+            List<UUID> veicoliNonDisponibili = prenotazioneRepository.findVeicoliNonDisponibili(dataInizio, dataFine);
+            spec = spec.and(notInIds(veicoliNonDisponibili));
+        }
         return veicoloRepository.findAll(spec, pageable);
+    }
+
+    // escludere i veicoli non disponibili
+    public Specification<Veicolo> notInIds(List<UUID> ids) {
+        return (root, query, criteriaBuilder) -> {
+            if (ids == null || ids.isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+            return root.get("id")
+                       .in(ids)
+                       .not();
+        };
     }
 
     // <--------------------------------------Get All Veicoli-------------------------------------->
@@ -153,6 +176,8 @@ public class VeicoloService {
         return veicoloRepository.save(veicolo);
 
     }
+
+
 }
 
 
