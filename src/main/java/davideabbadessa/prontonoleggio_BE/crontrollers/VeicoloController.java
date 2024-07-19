@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,19 +44,21 @@ public class VeicoloController {
             @RequestParam(required = false) String categoria,
             @RequestParam(required = false) Double minPrezzo,
             @RequestParam(required = false) Double maxPrezzo,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInizio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFine,
             Pageable pageable
     ) {
         Specification<Veicolo> spec = Specification.where(
                 veicoloSpecification.hasMarca(marca)
-                        .and(veicoloSpecification.hasPosizione(posizione))
-                        .and(veicoloSpecification.hasModello(modello))
-                        .and(veicoloSpecification.hasAnno(anno))
-                        .and(veicoloSpecification.hasTipoVeicolo(tipoVeicolo))
-                        .and(veicoloSpecification.hasCategoria(categoria))
-                        .and(veicoloSpecification.hasPrezzoBetween(minPrezzo, maxPrezzo))
+                                    .and(veicoloSpecification.hasPosizione(posizione))
+                                    .and(veicoloSpecification.hasModello(modello))
+                                    .and(veicoloSpecification.hasAnno(anno))
+                                    .and(veicoloSpecification.hasTipoVeicolo(tipoVeicolo))
+                                    .and(veicoloSpecification.hasCategoria(categoria))
+                                    .and(veicoloSpecification.hasPrezzoBetween(minPrezzo, maxPrezzo))
         );
 
-        Page<Veicolo> veicoli = veicoloService.searchVeicoli(spec, pageable);
+        Page<Veicolo> veicoli = veicoloService.searchVeicoli(spec, dataInizio, dataFine, pageable);
         return new ResponseEntity<>(veicoli, HttpStatus.OK);
     }
 
