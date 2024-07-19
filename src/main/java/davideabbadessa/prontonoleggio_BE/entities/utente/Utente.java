@@ -1,5 +1,6 @@
 package davideabbadessa.prontonoleggio_BE.entities.utente;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import davideabbadessa.prontonoleggio_BE.enums.utente.Role;
 import davideabbadessa.prontonoleggio_BE.enums.utente.Sesso;
 import davideabbadessa.prontonoleggio_BE.payloads.utente.NuovoUtenteDTO;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-//@JsonIgnoreProperties({"password", "role", "authorities", "enabled", "accountNonExpired", "credentialsNonExpired", "accountNonLocked"})
+@JsonIgnoreProperties({"password", "role", "authorities", "enabled", "accountNonExpired", "credentialsNonExpired", "accountNonLocked"})
 @Table(name = "utenti")
 public class Utente implements UserDetails {
 
@@ -67,7 +68,8 @@ public class Utente implements UserDetails {
         this.codiceFiscale = dto.codiceFiscale();
         this.patente = dto.patente();
         this.role = Role.ROLE_USER;
-        this.eta = Period.between(this.dataNascita, LocalDate.now()).getYears();
+        this.eta = Period.between(this.dataNascita, LocalDate.now())
+                         .getYears();
     }
 
 
