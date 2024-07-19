@@ -2,7 +2,7 @@ package davideabbadessa.prontonoleggio_BE.crontrollers;
 
 import davideabbadessa.prontonoleggio_BE.entities.utente.Utente;
 import davideabbadessa.prontonoleggio_BE.exceptions.BadRequestException;
-import davideabbadessa.prontonoleggio_BE.payloads.utente.NuovoUtenteDTO;
+import davideabbadessa.prontonoleggio_BE.payloads.utente.ModificaUtenteDTO;
 import davideabbadessa.prontonoleggio_BE.services.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,7 +33,7 @@ public class UtenteController {
     }
 
     @PutMapping("/me")
-    public Utente updateProfilo(@AuthenticationPrincipal Utente currentAuthenticatedUtente, @Validated @RequestBody NuovoUtenteDTO body) {
+    public Utente updateProfilo(@AuthenticationPrincipal Utente currentAuthenticatedUtente, @Validated @RequestBody ModificaUtenteDTO body) {
         return this.utenteService.updateProfilo(currentAuthenticatedUtente.getId(), body);
     }
 
@@ -44,7 +44,8 @@ public class UtenteController {
             utenteService.deleteProfilo(currentAuthenticatedUtente.getId(), password);
             return ResponseEntity.ok("Profilo eliminato con successo");
         } catch (BadRequestException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                 .body(e.getMessage());
         }
     }
 
@@ -64,7 +65,8 @@ public class UtenteController {
             utenteService.deleteProfiloAdmin(currentAuthenticatedUtente.getId(), password, id);
             return ResponseEntity.ok("Profilo eliminato con successo");
         } catch (BadRequestException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                 .body(e.getMessage());
         }
     }
 
