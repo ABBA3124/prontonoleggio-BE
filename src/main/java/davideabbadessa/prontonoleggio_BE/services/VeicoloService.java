@@ -82,7 +82,8 @@ public class VeicoloService {
         veicolo.setTariffaGiornaliera(veicoloDTO.tariffaGiornaliera());
         veicolo.setDisponibilita(veicoloDTO.disponibilita());
         veicolo.setChilometraggio(veicoloDTO.chilometraggio());
-        veicolo.setPosizione(veicoloDTO.posizione());
+        veicolo.setPosizione(veicoloDTO.posizione()
+                                       .toLowerCase());
         veicolo.setDocumentiAssicurativi(veicoloDTO.documentiAssicurativi());
         veicolo.setRevisione(veicoloDTO.revisione());
         veicolo.setImmagini(veicoloDTO.immagini());
@@ -102,6 +103,7 @@ public class VeicoloService {
             List<UUID> veicoliNonDisponibili = prenotazioneRepository.findVeicoliNonDisponibili(dataInizio, dataFine);
             spec = spec.and(notInIds(veicoliNonDisponibili));
         }
+        spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("disponibilita"), Disponibilita.DISPONIBILE));
         return veicoloRepository.findAll(spec, pageable);
     }
 

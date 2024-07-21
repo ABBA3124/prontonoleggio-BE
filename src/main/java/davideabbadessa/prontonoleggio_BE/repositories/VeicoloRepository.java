@@ -16,6 +16,5 @@ public interface VeicoloRepository extends JpaRepository<Veicolo, UUID> {
 
     Page<Veicolo> findByDisponibilita(Disponibilita disponibilita, Pageable pageable);
 
-
     Page<Veicolo> findAll(Specification<Veicolo> spec, Pageable pageable);
 }
