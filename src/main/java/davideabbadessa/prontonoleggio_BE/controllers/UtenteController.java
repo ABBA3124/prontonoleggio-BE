@@ -1,11 +1,13 @@
-package davideabbadessa.prontonoleggio_BE.crontrollers;
+package davideabbadessa.prontonoleggio_BE.controllers;
 
+import davideabbadessa.prontonoleggio_BE.components.UtenteSpecifications;
 import davideabbadessa.prontonoleggio_BE.entities.utente.Utente;
 import davideabbadessa.prontonoleggio_BE.exceptions.BadRequestException;
 import davideabbadessa.prontonoleggio_BE.payloads.utente.ModificaUtenteDTO;
 import davideabbadessa.prontonoleggio_BE.services.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,6 +26,9 @@ public class UtenteController {
 
     @Autowired
     private UtenteService utenteService;
+
+    @Autowired
+    private UtenteSpecifications utenteSpecifications;
 
 
     // <-------------------------------------------- ROLE_USER -------------------------------------------->
@@ -53,9 +59,69 @@ public class UtenteController {
     // <-------------------------------------------- ROLE_SUPERADMIN -------------------------------------------->
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
-    public Page<Utente> getAllUtenti(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
-        return this.utenteService.getAllUtenti(page, size, sortBy);
+    public Page<Utente> getAllUtenti(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String cognome,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String telefono,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) Integer eta,
+            @RequestParam(required = false) String citta,
+            @RequestParam(required = false) String provincia,
+            @RequestParam(required = false) String nazione,
+            @RequestParam(required = false) LocalDate dataNascita,
+            @RequestParam(required = false) String codiceFiscale,
+            @RequestParam(required = false) String patente,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+
+        Specification<Utente> spec = Specification.where(null);
+
+        if (nome != null) {
+            spec = spec.and(UtenteSpecifications.hasNome(nome));
+        }
+        if (cognome != null) {
+            spec = spec.and(UtenteSpecifications.hasCognome(cognome));
+        }
+        if (email != null) {
+            spec = spec.and(UtenteSpecifications.hasEmail(email));
+        }
+        if (telefono != null) {
+            spec = spec.and(UtenteSpecifications.hasTelefono(telefono));
+        }
+        if (username != null) {
+            spec = spec.and(UtenteSpecifications.hasUsername(username));
+        }
+        if (role != null) {
+            spec = spec.and(UtenteSpecifications.hasRole(role));
+        }
+        if (eta != null) {
+            spec = spec.and(UtenteSpecifications.hasEta(eta));
+        }
+        if (citta != null) {
+            spec = spec.and(UtenteSpecifications.hasCitta(citta));
+        }
+        if (provincia != null) {
+            spec = spec.and(UtenteSpecifications.hasProvincia(provincia));
+        }
+        if (nazione != null) {
+            spec = spec.and(UtenteSpecifications.hasNazione(nazione));
+        }
+        if (dataNascita != null) {
+            spec = spec.and(UtenteSpecifications.hasDataNascita(dataNascita));
+        }
+        if (codiceFiscale != null) {
+            spec = spec.and(UtenteSpecifications.hasCodiceFiscale(codiceFiscale));
+        }
+        if (patente != null) {
+            spec = spec.and(UtenteSpecifications.hasPatente(patente));
+        }
+
+        return this.utenteService.getAllUtenti(spec, page, size, sortBy);
     }
+
 
     @DeleteMapping("/elimina/{id}")
     @PreAuthorize("hasRole('ROLE_SUPERADMIN')")

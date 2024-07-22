@@ -1,4 +1,4 @@
-package davideabbadessa.prontonoleggio_BE.crontrollers;
+package davideabbadessa.prontonoleggio_BE.controllers;
 
 import davideabbadessa.prontonoleggio_BE.exceptions.BadRequestException;
 import davideabbadessa.prontonoleggio_BE.payloads.utente.NuovoUtenteDTO;
@@ -35,6 +35,7 @@ public class AuthController {
         if (validationResult.hasErrors()) {
             throw new BadRequestException(validationResult.getAllErrors());
         }
-        return new UtenteResponseDTO(this.utenteService.saveUtente(body).getId());
+        return new UtenteResponseDTO(this.utenteService.saveUtente(body)
+                                                       .getId());
     }
 }

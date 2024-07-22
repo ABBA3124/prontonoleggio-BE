@@ -1,4 +1,4 @@
-package davideabbadessa.prontonoleggio_BE.crontrollers.Prenotazione;
+package davideabbadessa.prontonoleggio_BE.controllers.Prenotazione;
 
 import davideabbadessa.prontonoleggio_BE.entities.prenotazioni.Prenotazione;
 import davideabbadessa.prontonoleggio_BE.entities.utente.Utente;
