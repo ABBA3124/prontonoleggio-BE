@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +27,9 @@ public class UtenteService {
     private PasswordEncoder passwordEncoder;
 
     // <-------------------------------------------- Metodi -------------------------------------------->
-    public Page<Utente> getAllUtenti(int pageNumber, int pageSize, String sortBy) {
+    public Page<Utente> getAllUtenti(Specification<Utente> spec, int pageNumber, int pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
-        return utenteRepository.findAll(pageable);
+        return utenteRepository.findAll(spec, pageable);
     }
 
     public Utente getUtenteById(UUID id) {
