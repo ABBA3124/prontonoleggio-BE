@@ -20,7 +20,8 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-@JsonIgnoreProperties({"password", "role", "authorities", "enabled", "accountNonExpired", "credentialsNonExpired", "accountNonLocked"})
+@JsonIgnoreProperties({"password", "enabled", "authorities", "accountNonExpired", "credentialsNonExpired", "accountNonLocked"})
+//@JsonIgnoreProperties({"password", "role", "authorities", "enabled", "accountNonExpired", "credentialsNonExpired", "accountNonLocked"})
 @Table(name = "utenti")
 public class Utente implements UserDetails {
 
