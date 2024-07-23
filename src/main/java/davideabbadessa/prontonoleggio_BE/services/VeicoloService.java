@@ -120,8 +120,8 @@ public class VeicoloService {
     }
 
     // <--------------------------------------Get All Veicoli-------------------------------------->
-    public List<Veicolo> GetAllVeicoli() {
-        return veicoloRepository.findAll();
+    public Page<Veicolo> getAllVeicoli(Pageable pageable) {
+        return veicoloRepository.findAll(pageable);
     }
 
     // <--------------------------------------Delete Veicoli by id-------------------------------------->

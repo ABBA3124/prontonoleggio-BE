@@ -8,6 +8,7 @@ import davideabbadessa.prontonoleggio_BE.payloads.veicolo.VeicoloDTO;
 import davideabbadessa.prontonoleggio_BE.services.VeicoloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -107,8 +107,10 @@ public class VeicoloController {
 
     // <--------------------------------------Get All Veicoli-------------------------------------->
     @GetMapping
-    public List<Veicolo> getAllVeicoli() {
-        return veicoloService.GetAllVeicoli();
+    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+    public Page<Veicolo> getAllVeicoli(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return veicoloService.getAllVeicoli(pageable);
     }
 
     // <--------------------------------------Modifica Veicolo-------------------------------------->
