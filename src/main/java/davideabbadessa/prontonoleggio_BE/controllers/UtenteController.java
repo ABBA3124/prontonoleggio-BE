@@ -51,7 +51,10 @@ public class UtenteController {
             return ResponseEntity.ok("Profilo eliminato con successo");
         } catch (BadRequestException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                 .body(e.getMessage());
+                                 .body("Autenticazione fallita: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Errore del server: Si è verificato un problema durante l'eliminazione del profilo.");
         }
     }
 
