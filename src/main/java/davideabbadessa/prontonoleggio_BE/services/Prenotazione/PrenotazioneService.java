@@ -92,4 +92,8 @@ public class PrenotazioneService {
 
         prenotazioneRepository.delete(prenotazione);
     }
+
+    public List<Prenotazione> getAllPrenotazioniAdmin() {
+        return prenotazioneRepository.findAll();
+    }
 }
