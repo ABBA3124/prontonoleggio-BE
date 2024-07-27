@@ -1,6 +1,8 @@
 package davideabbadessa.prontonoleggio_BE.repositories.Prenotazione;
 
 import davideabbadessa.prontonoleggio_BE.entities.prenotazioni.Prenotazione;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,5 +20,7 @@ public interface PrenotazioneRepository extends JpaRepository<Prenotazione, UUID
 
     @Query("SELECT DISTINCT p.veicolo.id FROM Prenotazione p WHERE p.dataFine >= :dataInizio AND p.dataInizio <= :dataFine")
     List<UUID> findVeicoliNonDisponibili(LocalDate dataInizio, LocalDate dataFine);
+
+    Page<Prenotazione> findAll(Pageable pageable);
 
 }
