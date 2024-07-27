@@ -7,6 +7,7 @@ import davideabbadessa.prontonoleggio_BE.services.Prenotazione.PrenotazioneServi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -61,5 +62,12 @@ public class PrenotazioneController {
             @AuthenticationPrincipal Utente currentAuthenticatedUtente) {
         prenotazioneService.cancellaPrenotazione(id, currentAuthenticatedUtente);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/tuttelaprenotazioni")
+    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+    public ResponseEntity<List<Prenotazione>> getTuttePrenotazioni() {
+        List<Prenotazione> prenotazioni = prenotazioneService.getAllPrenotazioniAdmin();
+        return new ResponseEntity<>(prenotazioni, HttpStatus.OK);
     }
 }
