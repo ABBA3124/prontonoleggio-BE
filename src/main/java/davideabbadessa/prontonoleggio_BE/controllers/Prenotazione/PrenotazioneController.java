@@ -5,6 +5,10 @@ import davideabbadessa.prontonoleggio_BE.entities.utente.Utente;
 import davideabbadessa.prontonoleggio_BE.payloads.Prenotazione.PrenotazioneDTO;
 import davideabbadessa.prontonoleggio_BE.services.Prenotazione.PrenotazioneService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -66,8 +70,11 @@ public class PrenotazioneController {
 
     @GetMapping("/tuttelaprenotazioni")
     @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
-    public ResponseEntity<List<Prenotazione>> getTuttePrenotazioni() {
-        List<Prenotazione> prenotazioni = prenotazioneService.getAllPrenotazioniAdmin();
+    public ResponseEntity<Page<Prenotazione>> getTuttePrenotazioni(@RequestParam(defaultValue = "0") int page,
+                                                                   @RequestParam(defaultValue = "10") int size,
+                                                                   @RequestParam(defaultValue = "id") String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Prenotazione> prenotazioni = prenotazioneService.getAllPrenotazioniAdmin(pageable);
         return new ResponseEntity<>(prenotazioni, HttpStatus.OK);
     }
 }
