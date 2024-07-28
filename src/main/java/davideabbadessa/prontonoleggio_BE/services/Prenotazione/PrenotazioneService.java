@@ -16,6 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,6 +45,7 @@ public class PrenotazioneService {
         Prenotazione prenotazione = new Prenotazione();
         prenotazione.setVeicolo(veicolo);
         prenotazione.setUtente(utente);
+        prenotazione.setDataCreazione(LocalDateTime.now());
         prenotazione.setDataInizio(prenotazioneDTO.dataInizio());
         prenotazione.setDataFine(prenotazioneDTO.dataFine());
 
