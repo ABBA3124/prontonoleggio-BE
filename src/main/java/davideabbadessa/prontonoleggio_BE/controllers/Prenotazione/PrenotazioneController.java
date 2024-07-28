@@ -45,7 +45,10 @@ public class PrenotazioneController {
 
     // GET /prenotazioni/storico
     @GetMapping("/storico")
-    public ResponseEntity<Page<Prenotazione>> getStoricoPrenotazioni(@AuthenticationPrincipal Utente currentAuthenticatedUtente, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
+    public ResponseEntity<Page<Prenotazione>> getStoricoPrenotazioni(@AuthenticationPrincipal Utente currentAuthenticatedUtente,
+                                                                     @RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "10") int size,
+                                                                     @RequestParam(defaultValue = "id") String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         Page<Prenotazione> prenotazioni = prenotazioneService.getPrenotazioniByUtente(currentAuthenticatedUtente.getId(), pageable);
         return new ResponseEntity<>(prenotazioni, HttpStatus.OK);
