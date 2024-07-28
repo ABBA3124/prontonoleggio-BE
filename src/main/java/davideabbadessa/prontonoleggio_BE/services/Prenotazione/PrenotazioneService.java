@@ -55,8 +55,8 @@ public class PrenotazioneService {
         return prenotazioniSovrapposte.isEmpty();
     }
 
-    public List<Prenotazione> getPrenotazioniByUtente(UUID utenteId) {
-        return prenotazioneRepository.findByUtenteId(utenteId);
+    public Page<Prenotazione> getPrenotazioniByUtente(UUID utenteId, Pageable pageable) {
+        return prenotazioneRepository.findByUtenteId(utenteId, pageable);
     }
 
     public Prenotazione modificaPrenotazione(UUID id, PrenotazioneDTO prenotazioneDTO, Utente currentAuthenticatedUtente) {
