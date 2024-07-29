@@ -18,6 +18,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -87,6 +88,7 @@ public class VeicoloService {
         veicolo.setDocumentiAssicurativi(veicoloDTO.documentiAssicurativi());
         veicolo.setRevisione(veicoloDTO.revisione());
         veicolo.setImmagini(veicoloDTO.immagini());
+        veicolo.setDataCreazioneVeicolo(LocalDateTime.now());
 
         return veicoloRepository.save(veicolo);
     }
