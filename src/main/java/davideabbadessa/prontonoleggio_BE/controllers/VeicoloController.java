@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -46,8 +47,10 @@ public class VeicoloController {
             @RequestParam(required = false) Double maxPrezzo,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInizio,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFine,
+            @RequestParam(defaultValue = "dataCreazioneVeicolo") String sortBy,
             Pageable pageable
     ) {
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.ASC, sortBy));
         Specification<Veicolo> spec = Specification.where(
                 veicoloSpecification.hasMarca(marca)
                                     .and(veicoloSpecification.hasPosizione(posizione))
