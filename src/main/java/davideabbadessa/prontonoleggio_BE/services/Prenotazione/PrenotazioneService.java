@@ -11,7 +11,10 @@ import davideabbadessa.prontonoleggio_BE.repositories.UtenteRepository;
 import davideabbadessa.prontonoleggio_BE.repositories.VeicoloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
@@ -97,8 +100,8 @@ public class PrenotazioneService {
         prenotazioneRepository.delete(prenotazione);
     }
 
-    public Page<Prenotazione> getAllPrenotazioniAdmin(Pageable pageable) {
-        return prenotazioneRepository.findAll(pageable);
+    public Page<Prenotazione> getAllPrenotazioniAdmin(Specification<Prenotazione> spec, int pageNumber, int pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        return prenotazioneRepository.findAll(spec, pageable);
     }
-
 }
