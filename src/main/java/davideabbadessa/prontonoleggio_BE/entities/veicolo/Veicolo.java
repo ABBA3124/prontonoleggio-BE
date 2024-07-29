@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -37,4 +38,5 @@ public abstract class Veicolo {
     private String documentiAssicurativi;
     private String revisione;
     private String immagini;
+    private LocalDateTime dataCreazioneVeicolo;
 }
