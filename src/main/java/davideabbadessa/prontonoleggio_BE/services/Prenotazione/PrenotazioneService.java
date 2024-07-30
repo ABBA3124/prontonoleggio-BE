@@ -89,14 +89,12 @@ public class PrenotazioneService {
     public void cancellaPrenotazione(UUID id, Utente currentAuthenticatedUtente) {
         Prenotazione prenotazione = prenotazioneRepository.findById(id)
                                                           .orElseThrow(() -> new NotFoundException("Prenotazione non trovata"));
-
         if (!prenotazione.getUtente()
                          .getId()
                          .equals(currentAuthenticatedUtente.getId()) && !currentAuthenticatedUtente.getAuthorities()
                                                                                                    .contains(new SimpleGrantedAuthority("ROLE_SUPERADMIN"))) {
             throw new BadRequestException("Non sei autorizzato a cancellare questa prenotazione");
         }
-
         prenotazioneRepository.delete(prenotazione);
     }
 

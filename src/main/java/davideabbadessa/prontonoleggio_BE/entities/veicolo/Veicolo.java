@@ -35,6 +35,7 @@ public abstract class Veicolo {
     private Disponibilita disponibilita;
     private int chilometraggio;
     private String posizione;
+    private String viaSede;
     private String documentiAssicurativi;
     private String revisione;
     private String immagini;

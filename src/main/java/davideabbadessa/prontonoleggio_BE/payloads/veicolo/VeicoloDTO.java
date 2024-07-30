@@ -49,6 +49,9 @@ public record VeicoloDTO(
         @NotBlank(message = "Posizione è obbligatoria")
         String posizione,
 
+        @NotBlank(message = "Via è obbligatoria")
+        String viaSede,
+
         String documentiAssicurativi,
 
         String revisione,

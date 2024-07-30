@@ -1,6 +1,7 @@
 package davideabbadessa.prontonoleggio_BE.components;
 
 import davideabbadessa.prontonoleggio_BE.entities.veicolo.Veicolo;
+import davideabbadessa.prontonoleggio_BE.enums.veicolo.Disponibilita;
 import davideabbadessa.prontonoleggio_BE.enums.veicolo.TipoVeicolo;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -8,30 +9,36 @@ import org.springframework.stereotype.Component;
 @Component
 public class VeicoloSpecification {
 
-    public Specification<Veicolo> hasMarca(String marca) {
+    public static Specification<Veicolo> hasMarca(String marca) {
         return (root, query, criteriaBuilder) ->
-                marca == null ? null : criteriaBuilder.equal(root.get("marca"), marca);
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("marca")), "%" + marca.toLowerCase() + "%");
     }
 
-    public Specification<Veicolo> hasPosizione(String posizione) {
+    public static Specification<Veicolo> hasPosizione(String posizione) {
         return (root, query, criteriaBuilder) ->
-                posizione == null ? null : criteriaBuilder.equal(root.get("posizione"), posizione);
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("posizione")), "%" + posizione.toLowerCase() + "%");
     }
 
-    public Specification<Veicolo> hasModello(String modello) {
+    public static Specification<Veicolo> hasModello(String modello) {
         return (root, query, criteriaBuilder) ->
-                modello == null ? null : criteriaBuilder.equal(root.get("modello"), modello);
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("modello")), "%" + modello.toLowerCase() + "%");
     }
 
-    public Specification<Veicolo> hasAnno(Integer anno) {
-        return (root, query, criteriaBuilder) ->
-                anno == null ? null : criteriaBuilder.equal(root.get("anno"), anno);
-    }
-
-    public Specification<Veicolo> hasTipoVeicolo(TipoVeicolo tipoVeicolo) {
+    public static Specification<Veicolo> hasTipoVeicolo(TipoVeicolo tipoVeicolo) {
         return (root, query, criteriaBuilder) ->
                 tipoVeicolo == null ? null : criteriaBuilder.equal(root.get("tipoVeicolo"), tipoVeicolo);
     }
+
+    public static Specification<Veicolo> hasDisponibilita(Disponibilita disponibilita) {
+        return (root, query, criteriaBuilder) ->
+                disponibilita == null ? null : criteriaBuilder.equal(root.get("disponibilita"), disponibilita);
+    }
+
+    public static Specification<Veicolo> hasTarga(String targa) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("targa")), "%" + targa.toLowerCase() + "%");
+    }
+
 
     public Specification<Veicolo> hasCategoria(String categoria) {
         return (root, query, criteriaBuilder) ->

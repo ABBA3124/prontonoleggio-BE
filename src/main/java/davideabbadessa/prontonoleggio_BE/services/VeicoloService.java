@@ -85,6 +85,7 @@ public class VeicoloService {
         veicolo.setChilometraggio(veicoloDTO.chilometraggio());
         veicolo.setPosizione(veicoloDTO.posizione()
                                        .toLowerCase());
+        veicolo.setViaSede(veicoloDTO.viaSede());
         veicolo.setDocumentiAssicurativi(veicoloDTO.documentiAssicurativi());
         veicolo.setRevisione(veicoloDTO.revisione());
         veicolo.setImmagini(veicoloDTO.immagini());
@@ -100,12 +101,13 @@ public class VeicoloService {
     }
 
     // <--------------------------------------Ricerca Veicoli in base a parametri di filtro-------------------------------------->
-    public Page<Veicolo> searchVeicoli(Specification<Veicolo> spec, LocalDate dataInizio, LocalDate dataFine, Pageable pageable) {
+    public Page<Veicolo> searchVeicoli(Specification<Veicolo> spec, LocalDate dataInizio, LocalDate dataFine, int pageNumber, int pageSize, String sortBy) {
         if (dataInizio != null && dataFine != null) {
             List<UUID> veicoliNonDisponibili = prenotazioneRepository.findVeicoliNonDisponibili(dataInizio, dataFine);
             spec = spec.and(notInIds(veicoliNonDisponibili));
         }
         spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("disponibilita"), Disponibilita.DISPONIBILE));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
         return veicoloRepository.findAll(spec, pageable);
     }
 
@@ -122,8 +124,9 @@ public class VeicoloService {
     }
 
     // <--------------------------------------Get All Veicoli-------------------------------------->
-    public Page<Veicolo> getAllVeicoli(Pageable pageable) {
-        return veicoloRepository.findAll(pageable);
+    public Page<Veicolo> getAllVeicoli(Specification<Veicolo> spec, int pageNumber, int pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        return veicoloRepository.findAll(spec, pageable);
     }
 
     // <--------------------------------------Delete Veicoli by id-------------------------------------->
@@ -173,6 +176,7 @@ public class VeicoloService {
         veicolo.setDisponibilita(veicoloDTO.disponibilita());
         veicolo.setChilometraggio(veicoloDTO.chilometraggio());
         veicolo.setPosizione(veicoloDTO.posizione());
+        veicolo.setViaSede(veicoloDTO.viaSede());
         veicolo.setDocumentiAssicurativi(veicoloDTO.documentiAssicurativi());
         veicolo.setRevisione(veicoloDTO.revisione());
         veicolo.setImmagini(veicoloDTO.immagini());

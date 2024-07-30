@@ -85,10 +85,8 @@ public class PrenotazioneController {
             @RequestParam(required = false) LocalDate dataInizio,
             @RequestParam(required = false) LocalDate dataFine,
             @RequestParam(required = false) String targaVeicolo,
-            //-------------------------------------------------------
             @RequestParam(required = false) TipoVeicolo tipoVeicolo,
             @RequestParam(required = false) String posizioneVeicolo,
-            //-------------------------------------------------------
             @RequestParam(required = false) String nomeUtente,
             @RequestParam(required = false) String cognomeUtente,
             @RequestParam(required = false) String emailUtente,

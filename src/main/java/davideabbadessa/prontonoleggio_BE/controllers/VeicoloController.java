@@ -8,9 +8,6 @@ import davideabbadessa.prontonoleggio_BE.payloads.veicolo.VeicoloDTO;
 import davideabbadessa.prontonoleggio_BE.services.VeicoloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -35,34 +32,59 @@ public class VeicoloController {
 
     // <--------------------------------------Ricerca Veicoli in base a parametri di filtro-------------------------------------->
     // Questo metodo consente di cercare veicoli basandosi su diversi parametri di filtro facoltativi:
+//    @GetMapping("/search")
+//    public ResponseEntity<Page<Veicolo>> searchVeicoli(
+//            @RequestParam(required = false) String posizione,
+//            @RequestParam(required = false) TipoVeicolo tipoVeicolo,
+//            @RequestParam(required = false) String categoria,
+//            @RequestParam(required = false) Double minPrezzo,
+//            @RequestParam(required = false) Double maxPrezzo,
+//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInizio,
+//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFine,
+//            @RequestParam(defaultValue = "dataCreazioneVeicolo") String sortBy,
+//            Pageable pageable
+//    ) {
+//        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.ASC, sortBy));
+//        Specification<Veicolo> spec = Specification.where(
+//                veicoloSpecification.hasPosizione(posizione)
+//                                    .and(veicoloSpecification.hasTipoVeicolo(tipoVeicolo))
+//                                    .and(veicoloSpecification.hasCategoria(categoria))
+//                                    .and(veicoloSpecification.hasPrezzoBetween(minPrezzo, maxPrezzo))
+//        );
+//
+//        Page<Veicolo> veicoli = veicoloService.searchVeicoli(spec, dataInizio, dataFine, pageable);
+//        return new ResponseEntity<>(veicoli, HttpStatus.OK);
+//    }
     @GetMapping("/search")
-    public ResponseEntity<Page<Veicolo>> searchVeicoli(
-            @RequestParam(required = false) String marca,
+    public Page<Veicolo> searchVeicoli(
             @RequestParam(required = false) String posizione,
-            @RequestParam(required = false) String modello,
-            @RequestParam(required = false) Integer anno,
             @RequestParam(required = false) TipoVeicolo tipoVeicolo,
             @RequestParam(required = false) String categoria,
             @RequestParam(required = false) Double minPrezzo,
             @RequestParam(required = false) Double maxPrezzo,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInizio,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFine,
-            @RequestParam(defaultValue = "dataCreazioneVeicolo") String sortBy,
-            Pageable pageable
-    ) {
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.ASC, sortBy));
-        Specification<Veicolo> spec = Specification.where(
-                veicoloSpecification.hasMarca(marca)
-                                    .and(veicoloSpecification.hasPosizione(posizione))
-                                    .and(veicoloSpecification.hasModello(modello))
-                                    .and(veicoloSpecification.hasAnno(anno))
-                                    .and(veicoloSpecification.hasTipoVeicolo(tipoVeicolo))
-                                    .and(veicoloSpecification.hasCategoria(categoria))
-                                    .and(veicoloSpecification.hasPrezzoBetween(minPrezzo, maxPrezzo))
-        );
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "dataCreazioneVeicolo") String sortBy) {
 
-        Page<Veicolo> veicoli = veicoloService.searchVeicoli(spec, dataInizio, dataFine, pageable);
-        return new ResponseEntity<>(veicoli, HttpStatus.OK);
+        Specification<Veicolo> spec = Specification.where(null);
+
+        if (posizione != null) {
+            spec = spec.and(VeicoloSpecification.hasPosizione(posizione));
+        }
+        if (tipoVeicolo != null) {
+            spec = spec.and(VeicoloSpecification.hasTipoVeicolo(tipoVeicolo));
+        }
+        if (categoria != null) {
+            spec = spec.and(veicoloSpecification.hasCategoria(categoria));
+        }
+        if (minPrezzo != null || maxPrezzo != null) {
+            spec = spec.and(veicoloSpecification.hasPrezzoBetween(minPrezzo, maxPrezzo));
+        }
+
+        return this.veicoloService.searchVeicoli(spec, dataInizio, dataFine, page, size, sortBy);
+
     }
 
     // <--------------------------------------Filtra Veicolo Per Disponibilità-------------------------------------->
@@ -109,11 +131,47 @@ public class VeicoloController {
     }
 
     // <--------------------------------------Get All Veicoli-------------------------------------->
+//    @GetMapping
+//    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+//    public Page<Veicolo> getAllVeicoli(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        return veicoloService.getAllVeicoli(pageable);
+//    }
+
     @GetMapping
     @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
-    public Page<Veicolo> getAllVeicoli(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return veicoloService.getAllVeicoli(pageable);
+    public Page<Veicolo> getAllVeicoli(
+            @RequestParam(required = false) TipoVeicolo tipoVeicolo,
+            @RequestParam(required = false) Disponibilita disponibilita,
+            @RequestParam(required = false) String posizioneVeicolo,
+            @RequestParam(required = false) String targaVeicolo,
+            @RequestParam(required = false) String marcaVeicolo,
+            @RequestParam(required = false) String modelloVeicolo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "dataCreazioneVeicolo") String sortBy) {
+
+        Specification<Veicolo> spec = Specification.where(null);
+
+        if (tipoVeicolo != null) {
+            spec = spec.and(VeicoloSpecification.hasTipoVeicolo(tipoVeicolo));
+        }
+        if (disponibilita != null) {
+            spec = spec.and(VeicoloSpecification.hasDisponibilita(disponibilita));
+        }
+        if (posizioneVeicolo != null) {
+            spec = spec.and(VeicoloSpecification.hasPosizione(posizioneVeicolo));
+        }
+        if (targaVeicolo != null) {
+            spec = spec.and(VeicoloSpecification.hasTarga(targaVeicolo));
+        }
+        if (marcaVeicolo != null) {
+            spec = spec.and(VeicoloSpecification.hasMarca(marcaVeicolo));
+        }
+        if (modelloVeicolo != null) {
+            spec = spec.and(VeicoloSpecification.hasModello(modelloVeicolo));
+        }
+        return this.veicoloService.getAllVeicoli(spec, page, size, sortBy);
     }
 
     // <--------------------------------------Modifica Veicolo-------------------------------------->
