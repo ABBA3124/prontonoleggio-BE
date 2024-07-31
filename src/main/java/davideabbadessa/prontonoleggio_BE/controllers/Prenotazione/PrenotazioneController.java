@@ -55,8 +55,9 @@ public class PrenotazioneController {
     public ResponseEntity<Page<Prenotazione>> getStoricoPrenotazioni(@AuthenticationPrincipal Utente currentAuthenticatedUtente,
                                                                      @RequestParam(defaultValue = "0") int page,
                                                                      @RequestParam(defaultValue = "10") int size,
-                                                                     @RequestParam(defaultValue = "id") String sortBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+                                                                     @RequestParam(defaultValue = "dataCreazione") String sortBy) {
+        Sort.Order sortOrder = new Sort.Order(Sort.Direction.DESC, sortBy);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortOrder));
         Page<Prenotazione> prenotazioni = prenotazioneService.getPrenotazioniByUtente(currentAuthenticatedUtente.getId(), pageable);
         return new ResponseEntity<>(prenotazioni, HttpStatus.OK);
     }
