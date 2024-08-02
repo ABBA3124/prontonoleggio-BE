@@ -38,13 +38,17 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         String userId = jwtTools.extractIdFromToken(accessToken);
         Utente currentUser = utenteService.getUtenteById(UUID.fromString(userId));
         Authentication authentication = new UsernamePasswordAuthenticationToken(currentUser, null, currentUser.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext()
+                             .setAuthentication(authentication);
         filterChain.doFilter(request, response);
     }
 
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return new AntPathMatcher().match("/auth/**", request.getServletPath());
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+        return pathMatcher.match("/auth/**", request.getServletPath()) ||
+                pathMatcher.match("/paypal/**", request.getServletPath()) ||
+                pathMatcher.match("/veicoli/**", request.getServletPath());
     }
 }
