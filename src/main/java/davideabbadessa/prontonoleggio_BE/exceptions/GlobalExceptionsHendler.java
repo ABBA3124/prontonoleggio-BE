@@ -1,7 +1,6 @@
 package davideabbadessa.prontonoleggio_BE.exceptions;
 
 
-import davideabbadessa.prontonoleggio_BE.payloads.ErroriDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,7 +32,10 @@ public class GlobalExceptionsHendler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErroriDTO handleBadRequest(BadRequestException error) {
         if (error.getErrorsList() != null) {
-            String message = error.getErrorsList().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
+            String message = error.getErrorsList()
+                                  .stream()
+                                  .map(objectError -> objectError.getDefaultMessage())
+                                  .collect(Collectors.joining(". "));
             return new ErroriDTO(message, LocalDateTime.now());
         } else {
             return new ErroriDTO(error.getMessage(), LocalDateTime.now());

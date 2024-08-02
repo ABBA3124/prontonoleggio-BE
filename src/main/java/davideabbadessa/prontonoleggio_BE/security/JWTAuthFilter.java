@@ -1,8 +1,8 @@
 package davideabbadessa.prontonoleggio_BE.security;
 
-import davideabbadessa.prontonoleggio_BE.entities.utente.Utente;
 import davideabbadessa.prontonoleggio_BE.exceptions.UnauthorizedException;
-import davideabbadessa.prontonoleggio_BE.services.UtenteService;
+import davideabbadessa.prontonoleggio_BE.utente.entities.Utente;
+import davideabbadessa.prontonoleggio_BE.utente.services.UtenteService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +48,6 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         AntPathMatcher pathMatcher = new AntPathMatcher();
         return pathMatcher.match("/auth/**", request.getServletPath()) ||
-                pathMatcher.match("/paypal/**", request.getServletPath()) ||
-                pathMatcher.match("/veicoli/**", request.getServletPath());
+                pathMatcher.match("/paypal/**", request.getServletPath());
     }
 }
