@@ -7,6 +7,8 @@ import java.util.List;
 
 @Getter
 public class BadRequestException extends RuntimeException {
+
+    // <-------- BAD REQUEST 400 -------->
     private List<ObjectError> errorsList;
 
     public BadRequestException(String message) {
@@ -17,5 +19,4 @@ public class BadRequestException extends RuntimeException {
         super("Ci sono stati errori di validazione del payload");
         this.errorsList = errorsList;
     }
-
 }

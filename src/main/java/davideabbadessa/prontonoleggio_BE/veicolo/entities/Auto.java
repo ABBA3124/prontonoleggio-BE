@@ -26,6 +26,4 @@ public class Auto extends Veicolo {
     private String sistemaAudio;
     private boolean bluetooth;
     private boolean sediliRiscaldati;
-
-
 }

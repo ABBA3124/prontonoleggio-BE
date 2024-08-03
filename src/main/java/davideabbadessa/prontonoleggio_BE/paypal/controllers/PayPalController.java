@@ -52,6 +52,7 @@ public class PayPalController {
         this.client = new PayPalHttpClient(environment);
     }
 
+    // Metodo per effettuare il pagamento
     @PostMapping("/pay")
     public ResponseEntity<String> pay(@RequestBody Map<String, Object> paymentDetails) {
         LOGGER.info("Initiating payment with details: " + paymentDetails);
@@ -81,6 +82,8 @@ public class PayPalController {
                              .body("Errore durante la creazione del pagamento.");
     }
 
+
+    // Metodo per gestire il successo del pagamento
     @GetMapping("/success")
     public ResponseEntity<String> successPay(@RequestParam("paymentId") String paymentId,
                                              @RequestParam("PayerID") String payerId,
@@ -128,6 +131,7 @@ public class PayPalController {
                              .body("Errore durante l'esecuzione del pagamento.");
     }
 
+    // Metodo per gestire l'annullamento del pagamento
     @GetMapping("/cancel")
     public String cancelPay() {
         LOGGER.info("Payment canceled");

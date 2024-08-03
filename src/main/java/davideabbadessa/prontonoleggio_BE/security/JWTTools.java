@@ -11,12 +11,14 @@ import java.util.Date;
 
 @Component
 public class JWTTools {
+
     @Value("${jwt.secret}")
     private String secret;
 
     @Value("${SCADENZA_TOKEN}")
     private long SCADENZA_TOKEN;
 
+    // Crea un token JWT con scadenza
     public String creaToken(Utente utente) {
         return Jwts.builder()
                    .issuedAt(new Date(System.currentTimeMillis()))
@@ -26,7 +28,7 @@ public class JWTTools {
                    .compact();
     }
 
-
+    // Verifica la validità del token JWT
     public void verifyToken(String token) {
         try {
             Jwts.parser()
@@ -38,6 +40,7 @@ public class JWTTools {
         }
     }
 
+    // Estrae l'ID dell'utente dal token JWT
     public String extractIdFromToken(String token) {
         return Jwts.parser()
                    .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))

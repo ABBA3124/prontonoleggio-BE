@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class VeicoloSpecification {
 
+    // <---------- Specifiche per la ricerca dei veicoli ---------->
+
     public static Specification<Veicolo> hasMarca(String marca) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("marca")), "%" + marca.toLowerCase() + "%");

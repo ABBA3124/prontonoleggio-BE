@@ -13,21 +13,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionsHendler {
 
-
-    @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErroriDTO handleNotFound(NotFoundException errore) {
-        return new ErroriDTO(errore.getMessage(), LocalDateTime.now());
-    }
-
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErroriDTO handleGeneric(Exception errore) {
-        return new ErroriDTO("Errore Generico! ", LocalDateTime.now());
-    }
-
-
+    // <-------- BAD REQUEST 400 -------->
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErroriDTO handleBadRequest(BadRequestException error) {
@@ -42,15 +28,33 @@ public class GlobalExceptionsHendler {
         }
     }
 
+    // <-------- UNAUTHORIZED 401 -------->
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErroriDTO handleUnauthorized(UnauthorizedException errore) {
         return new ErroriDTO(errore.getMessage(), LocalDateTime.now());
     }
 
+    // <-------- FORBIDDEN 403 -------->
     @ExceptionHandler(AuthorizationDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErroriDTO handleForbidden(AuthorizationDeniedException ex) {
         return new ErroriDTO("Non hai accesso a questa funzionalità", LocalDateTime.now());
     }
+
+    // <-------- NOT FOUND 404 -------->
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroriDTO handleNotFound(NotFoundException errore) {
+        return new ErroriDTO(errore.getMessage(), LocalDateTime.now());
+    }
+
+    // <-------- INTERNAL SERVER ERROR 500 -------->
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErroriDTO handleGeneric(Exception errore) {
+        return new ErroriDTO("Internal Server Error -> Errore Generico! ", LocalDateTime.now());
+    }
+
+
 }

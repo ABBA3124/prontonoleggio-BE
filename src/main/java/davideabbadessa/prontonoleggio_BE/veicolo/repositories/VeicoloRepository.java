@@ -14,10 +14,10 @@ import java.util.UUID;
 @Repository
 public interface VeicoloRepository extends JpaRepository<Veicolo, UUID> {
 
+    // <--------- Filtra Veicolo in base alla disponibilità enum --------->
     Page<Veicolo> findByDisponibilita(Disponibilita disponibilita, Pageable pageable);
 
     Page<Veicolo> findAll(Specification<Veicolo> spec, Pageable pageable);
 
-    //-----------------
     Page<Veicolo> findAll(Pageable pageable);
 }

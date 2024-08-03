@@ -27,6 +27,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UtenteService utenteService;
 
+    // Metodo che verifica il token e setta l'utente corrente
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
@@ -43,7 +44,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-
+    // Metodo che permette di non filtrare le richieste che contengono ex: "/auth/**" e "/paypal/**"
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         AntPathMatcher pathMatcher = new AntPathMatcher();

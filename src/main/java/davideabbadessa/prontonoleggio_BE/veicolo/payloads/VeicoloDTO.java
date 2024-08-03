@@ -4,7 +4,7 @@ import davideabbadessa.prontonoleggio_BE.veicolo.enums.Disponibilita;
 import davideabbadessa.prontonoleggio_BE.veicolo.enums.TipoVeicolo;
 import jakarta.validation.constraints.*;
 
-
+// DTO per la creazione di un nuovo veicolo
 public record VeicoloDTO(
         @NotBlank(message = "Marca è obbligatoria")
         String marca,

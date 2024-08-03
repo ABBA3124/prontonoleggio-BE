@@ -30,19 +30,22 @@ public class UtenteController {
     @Autowired
     private UtenteSpecifications utenteSpecifications;
 
-
     // <-------------------------------------------- ROLE_USER -------------------------------------------->
+
+    // GET /utente/me -> Restituisce il profilo dell'utente autenticato
     @GetMapping("/me")
     public Utente getProfilo(@AuthenticationPrincipal Utente currentAuthenticatedUtente) {
         return currentAuthenticatedUtente;
 
     }
 
+    // PUT /utente/me -> Modifica il profilo dell'utente autenticato
     @PutMapping("/me")
     public Utente updateProfilo(@AuthenticationPrincipal Utente currentAuthenticatedUtente, @Validated @RequestBody ModificaUtenteDTO body) {
         return this.utenteService.updateProfilo(currentAuthenticatedUtente.getId(), body);
     }
 
+    // DELETE /utente/me -> Elimina il profilo dell'utente autenticato
     @DeleteMapping("/me")
     public ResponseEntity<String> deleteProfilo(@AuthenticationPrincipal Utente currentAuthenticatedUtente, @RequestBody Map<String, String> body) {
         String password = body.get("password");
@@ -58,8 +61,9 @@ public class UtenteController {
         }
     }
 
-
     // <-------------------------------------------- ROLE_SUPERADMIN -------------------------------------------->
+
+    // GET /utente/all -> Restituisce tutti gli utenti (solo superadmin)
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
     public Page<Utente> getAllUtenti(
@@ -125,7 +129,14 @@ public class UtenteController {
         return this.utenteService.getAllUtenti(spec, page, size, sortBy);
     }
 
+    // GET /utente/cerca/{id} -> Cerca un utente per id (solo superadmin)
+    @GetMapping("/cerca/{id}")
+    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
+    public Utente getUtenteById(@PathVariable UUID id) {
+        return this.utenteService.getUtenteById(id);
+    }
 
+    // DELETE /utente/elimina/{id} -> Elimina un utente per id (solo superadmin)
     @DeleteMapping("/elimina/{id}")
     @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
     public ResponseEntity<String> deleteProfiloById(@PathVariable UUID id, @AuthenticationPrincipal Utente currentAuthenticatedUtente, @RequestBody Map<String, String> body) {
@@ -138,12 +149,5 @@ public class UtenteController {
                                  .body(e.getMessage());
         }
     }
-
-    @GetMapping("/cerca/{id}")
-    @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
-    public Utente getUtenteById(@PathVariable UUID id) {
-        return this.utenteService.getUtenteById(id);
-    }
-
 }
 

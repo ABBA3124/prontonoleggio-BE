@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Component
 public class UtenteSpecifications {
 
+    // <-------------------------------------------- Utente Specifications -------------------------------------------->
     public static Specification<Utente> hasNome(String nome) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("nome")), "%" + nome.toLowerCase() + "%");

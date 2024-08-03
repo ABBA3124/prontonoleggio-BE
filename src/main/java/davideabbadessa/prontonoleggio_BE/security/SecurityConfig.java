@@ -22,7 +22,10 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 public class SecurityConfig {
+    
+    // <-------- CONFIGURAZIONE DI BASE PER LA SICUREZZA DELL'APPLICAZIONE -------->
 
+    // Configurazione di base per la sicurezza dell'applicazione (Spring Security)
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         // Disabilito alcune funzionalità di default
@@ -35,11 +38,13 @@ public class SecurityConfig {
         return httpSecurity.build();
     }
 
+    // Configurazione per la codifica della password con BCrypt
     @Bean
     PasswordEncoder getBCrypt() {
         return new BCryptPasswordEncoder(13);
     }
 
+    // Configurazione per il CORS (Cross-Origin Resource Sharing)
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

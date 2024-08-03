@@ -31,15 +31,7 @@ public class VeicoloService {
     @Autowired
     private PrenotazioneRepository prenotazioneRepository;
 
-
-    // <--------------------------------------Filtra Veicolo in base alla disponibilità enum-------------------------------------->
-    public Page<Veicolo> getVeicoliByDisponibilita(Disponibilita disponibilita, int pageNumber, int pageSize, String sortBy) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
-        return veicoloRepository.findByDisponibilita(disponibilita, pageable);
-    }
-
-
-    // <--------------------------------------Salva Veicolo-------------------------------------->
+    // <---------- Salva Veicolo ---------->
     public Veicolo salvaVeicolo(VeicoloDTO veicoloDTO) {
         Veicolo veicolo;
 
@@ -94,47 +86,7 @@ public class VeicoloService {
         return veicoloRepository.save(veicolo);
     }
 
-    // <--------------------------------------Veicolo by ID-------------------------------------->
-    public Veicolo getVeicoloById(UUID id) {
-        return veicoloRepository.findById(id)
-                                .orElseThrow(() -> new NotFoundException("Veicolo non trovato"));
-    }
-
-    // <--------------------------------------Ricerca Veicoli in base a parametri di filtro-------------------------------------->
-    public Page<Veicolo> searchVeicoli(Specification<Veicolo> spec, LocalDate dataInizio, LocalDate dataFine, int pageNumber, int pageSize, String sortBy) {
-        if (dataInizio != null && dataFine != null) {
-            List<UUID> veicoliNonDisponibili = prenotazioneRepository.findVeicoliNonDisponibili(dataInizio, dataFine);
-            spec = spec.and(notInIds(veicoliNonDisponibili));
-        }
-        spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("disponibilita"), Disponibilita.DISPONIBILE));
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
-        return veicoloRepository.findAll(spec, pageable);
-    }
-
-    // escludere i veicoli non disponibili
-    public Specification<Veicolo> notInIds(List<UUID> ids) {
-        return (root, query, criteriaBuilder) -> {
-            if (ids == null || ids.isEmpty()) {
-                return criteriaBuilder.conjunction();
-            }
-            return root.get("id")
-                       .in(ids)
-                       .not();
-        };
-    }
-
-    // <--------------------------------------Get All Veicoli-------------------------------------->
-    public Page<Veicolo> getAllVeicoli(Specification<Veicolo> spec, int pageNumber, int pageSize, String sortBy) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
-        return veicoloRepository.findAll(spec, pageable);
-    }
-
-    // <--------------------------------------Delete Veicoli by id-------------------------------------->
-    public void deleteVeicolo(UUID id) {
-        veicoloRepository.deleteById(id);
-    }
-
-    // <--------------------------------------Modifica Veicolo-------------------------------------->
+    // <---------- Modifica Veicolo ---------->
     public Veicolo modificaVeicolo(UUID id, VeicoloDTO veicoloDTO) {
         Veicolo veicolo = getVeicoloById(id);
 
@@ -182,10 +134,53 @@ public class VeicoloService {
         veicolo.setImmagini(veicoloDTO.immagini());
 
         return veicoloRepository.save(veicolo);
-
     }
 
+    // <---------- Get All Veicoli ---------->
+    public Page<Veicolo> getAllVeicoli(Specification<Veicolo> spec, int pageNumber, int pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        return veicoloRepository.findAll(spec, pageable);
+    }
 
+    // <---------- Cerca Veicolo by ID ---------->
+    public Veicolo getVeicoloById(UUID id) {
+        return veicoloRepository.findById(id)
+                                .orElseThrow(() -> new NotFoundException("Veicolo non trovato"));
+    }
+
+    // <---------- Delete Veicoli by id ---------->
+    public void deleteVeicolo(UUID id) {
+        veicoloRepository.deleteById(id);
+    }
+
+    // <---------- Filtra Veicolo in base alla disponibilità enum ---------->
+    public Page<Veicolo> getVeicoliByDisponibilita(Disponibilita disponibilita, int pageNumber, int pageSize, String sortBy) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        return veicoloRepository.findByDisponibilita(disponibilita, pageable);
+    }
+
+    // <---------- Ricerca Veicoli in base a parametri di filtro + Controllo se il veicolo è disponibile in base alle date di prenotazione ---------->
+    public Page<Veicolo> searchVeicoli(Specification<Veicolo> spec, LocalDate dataInizio, LocalDate dataFine, int pageNumber, int pageSize, String sortBy) {
+        if (dataInizio != null && dataFine != null) {
+            List<UUID> veicoliNonDisponibili = prenotazioneRepository.findVeicoliNonDisponibili(dataInizio, dataFine);
+            spec = spec.and(notInIds(veicoliNonDisponibili));
+        }
+        spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("disponibilita"), Disponibilita.DISPONIBILE));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        return veicoloRepository.findAll(spec, pageable);
+    }
+
+    // <---------- Controllo se il veicolo è disponibile in base alle date di prenotazione ---------->
+    public Specification<Veicolo> notInIds(List<UUID> ids) {
+        return (root, query, criteriaBuilder) -> {
+            if (ids == null || ids.isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+            return root.get("id")
+                       .in(ids)
+                       .not();
+        };
+    }
 }
 
 

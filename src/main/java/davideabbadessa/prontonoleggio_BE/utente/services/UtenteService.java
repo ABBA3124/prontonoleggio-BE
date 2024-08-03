@@ -26,19 +26,19 @@ public class UtenteService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // <-------------------------------------------- Get all Utenti  -------------------------------------------->
+    // <-------------------------------------------- Get all Utenti -------------------------------------------->
     public Page<Utente> getAllUtenti(Specification<Utente> spec, int pageNumber, int pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
         return utenteRepository.findAll(spec, pageable);
     }
 
-    // <-------------------------------------------- Utente by ID  -------------------------------------------->
+    // <-------------------------------------------- Utente by ID -------------------------------------------->
     public Utente getUtenteById(UUID id) {
         return utenteRepository.findById(id)
                                .orElseThrow(() -> new NotFoundException(id));
     }
 
-    // <-------------------------------------------- Utente by Email  -------------------------------------------->
+    // <-------------------------------------------- Utente by Email -------------------------------------------->
     public Utente getUtenteByEmail(String email) {
         return utenteRepository.findByEmail(email)
                                .orElseThrow(() -> new NotFoundException(email + " not found"));
@@ -50,38 +50,17 @@ public class UtenteService {
                                .orElseThrow(() -> new NotFoundException(username + " not found"));
     }
 
-    // <-------------------------------------------- Save Utente  -------------------------------------------->
+    // <-------------------------------------------- Save Utente -------------------------------------------->
     public Utente saveUtente(NuovoUtenteDTO utenteDTO) {
-        validateUtente(null, utenteDTO);
+        validateUtenteControlSave(null, utenteDTO);
         Utente nuovoUtente = new Utente(utenteDTO);
         nuovoUtente.setPassword(passwordEncoder.encode(utenteDTO.password()));
         nuovoUtente.setAvatar("https://ui-avatars.com/api/?name=" + nuovoUtente.getNome() + "+" + nuovoUtente.getCognome() + "&background=1E90FF&color=fff");
         return utenteRepository.save(nuovoUtente);
     }
 
-    // <-------------------------------------------- Update Utente  -------------------------------------------->
-    public Utente updateProfilo(UUID utenteId, ModificaUtenteDTO body) {
-        validateUtente2(utenteId, body);
-        Utente found = this.getUtenteById(utenteId);
-
-        found.setUsername(body.username());
-        found.setEmail(body.email());
-        found.setNome(body.nome());
-        found.setCognome(body.cognome());
-        found.setTelefono(body.telefono());
-        found.setIndirizzo(body.indirizzo());
-        found.setNumeroCivico(body.numeroCivico());
-        found.setCitta(body.citta());
-        found.setCap(body.cap());
-        found.setProvincia(body.provincia());
-        found.setNazione(body.nazione());
-        found.setAvatar("https://ui-avatars.com/api/?name=" + body.nome() + "+" + body.cognome());
-
-        return utenteRepository.save(found);
-    }
-
-    // <-------------------------------------------- Validazione Utente  -------------------------------------------->
-    private void validateUtente(UUID userId, NuovoUtenteDTO utenteDTO) {
+    // <-------------------------------------------- Validazione Utente Controllo Per Save -------------------------------------------->
+    private void validateUtenteControlSave(UUID userId, NuovoUtenteDTO utenteDTO) {
         if (utenteRepository.findByEmail(utenteDTO.email())
                             .filter(existingUser -> !existingUser.getId()
                                                                  .equals(userId))
@@ -114,8 +93,29 @@ public class UtenteService {
         }
     }
 
-    // <-------------------------------------------- Validazione Utente 2 -------------------------------------------->
-    private void validateUtente2(UUID userId, ModificaUtenteDTO utenteDTO) {
+    // <-------------------------------------------- Update Utente  -------------------------------------------->
+    public Utente updateProfilo(UUID utenteId, ModificaUtenteDTO body) {
+        validateUtenteControlUpdate(utenteId, body);
+        Utente found = this.getUtenteById(utenteId);
+
+        found.setUsername(body.username());
+        found.setEmail(body.email());
+        found.setNome(body.nome());
+        found.setCognome(body.cognome());
+        found.setTelefono(body.telefono());
+        found.setIndirizzo(body.indirizzo());
+        found.setNumeroCivico(body.numeroCivico());
+        found.setCitta(body.citta());
+        found.setCap(body.cap());
+        found.setProvincia(body.provincia());
+        found.setNazione(body.nazione());
+        found.setAvatar("https://ui-avatars.com/api/?name=" + body.nome() + "+" + body.cognome());
+
+        return utenteRepository.save(found);
+    }
+
+    // <-------------------------------------------- Validazione Utente Controllo Per Update -------------------------------------------->
+    private void validateUtenteControlUpdate(UUID userId, ModificaUtenteDTO utenteDTO) {
         if (utenteRepository.findByEmail(utenteDTO.email())
                             .filter(existingUser -> !existingUser.getId()
                                                                  .equals(userId))
@@ -152,7 +152,7 @@ public class UtenteService {
         }
     }
 
-    // <-------------------------------------------- Delete Utente ROLE_SUPERADMIN (Profilo di un altro Utente) -------------------------------------------->
+    // <-------------------------------------------- Delete Utente SUPERADMIN (Profilo di un altro Utente) -------------------------------------------->
     public void deleteProfiloAdmin(UUID superAdminId, String password, UUID targetUserId) {
         Utente superAdmin = getUtenteById(superAdminId);
         Utente targetUser = getUtenteById(targetUserId);
