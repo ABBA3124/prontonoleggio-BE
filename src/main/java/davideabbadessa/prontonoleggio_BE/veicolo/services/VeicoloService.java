@@ -75,8 +75,7 @@ public class VeicoloService {
         veicolo.setTariffaGiornaliera(veicoloDTO.tariffaGiornaliera());
         veicolo.setDisponibilita(veicoloDTO.disponibilita());
         veicolo.setChilometraggio(veicoloDTO.chilometraggio());
-        veicolo.setPosizione(veicoloDTO.posizione()
-                                       .toLowerCase());
+        veicolo.setPosizione(veicoloDTO.posizione());
         veicolo.setViaSede(veicoloDTO.viaSede());
         veicolo.setDocumentiAssicurativi(veicoloDTO.documentiAssicurativi());
         veicolo.setRevisione(veicoloDTO.revisione());
