@@ -37,13 +37,9 @@ public class VeicoloService {
 
         if (veicoloDTO.tipoVeicolo() == TipoVeicolo.AUTO) {
             veicolo = new Auto(
-                    veicoloDTO.motorizzazione(),
-                    veicoloDTO.trasmissione(),
-                    veicoloDTO.trazione(),
                     veicoloDTO.porte(),
                     veicoloDTO.capacitaBagagliaio(),
                     veicoloDTO.airbag(),
-                    veicoloDTO.abs(),
                     veicoloDTO.controlloStabilita(),
                     veicoloDTO.ariaCondizionata(),
                     veicoloDTO.sistemaNavigazione(),
@@ -54,33 +50,45 @@ public class VeicoloService {
         } else if (veicoloDTO.tipoVeicolo() == TipoVeicolo.MOTO) {
             veicolo = new Moto(
                     veicoloDTO.bauletto(),
-                    veicoloDTO.parabrezza(),
-                    veicoloDTO.abs(),
-                    veicoloDTO.controlloTrattamento()
+                    veicoloDTO.parabrezza()
             );
         } else {
             throw new IllegalArgumentException("Tipo veicolo non supportato");
         }
 
+        // <---------- Set Veicolo important ---------->
+        veicolo.setDataCreazioneVeicolo(LocalDateTime.now());
+        veicolo.setTipoVeicolo(veicoloDTO.tipoVeicolo());
+        veicolo.setDisponibilita(veicoloDTO.disponibilita());
+
+        // <---------- Sede Veicolo ---------->
+        veicolo.setNomeSede(veicoloDTO.nomeSede());
+        veicolo.setCittaSede(veicoloDTO.cittaSede());
+        veicolo.setViaSede(veicoloDTO.viaSede());
+        veicolo.setProvinciaSede(veicoloDTO.provinciaSede());
+        veicolo.setTelefonoSede(veicoloDTO.telefonoSede());
+        veicolo.setEmailSede(veicoloDTO.emailSede());
+        veicolo.setOrariSede(veicoloDTO.orariSede());
+
+        // <---------- Dati Veicolo ---------->
+        veicolo.setTarga(veicoloDTO.targa());
+        veicolo.setImmagini(veicoloDTO.immagini());
         veicolo.setMarca(veicoloDTO.marca());
         veicolo.setModello(veicoloDTO.modello());
         veicolo.setAnno(veicoloDTO.anno());
-        veicolo.setTarga(veicoloDTO.targa());
-        veicolo.setTipoVeicolo(veicoloDTO.tipoVeicolo());
         veicolo.setCategoria(veicoloDTO.categoria());
+        veicolo.setAlimentazione(veicoloDTO.alimentazione());
+        veicolo.setCambio(veicoloDTO.cambio());
+        veicolo.setTrazione(veicoloDTO.trazione());
         veicolo.setCilindrata(veicoloDTO.cilindrata());
-        veicolo.setPotenza(veicoloDTO.potenza());
+        veicolo.setPotenzaKw(veicoloDTO.potenzaKw());
         veicolo.setConsumoCarburante(veicoloDTO.consumoCarburante());
         veicolo.setPosti(veicoloDTO.posti());
         veicolo.setTariffaGiornaliera(veicoloDTO.tariffaGiornaliera());
-        veicolo.setDisponibilita(veicoloDTO.disponibilita());
         veicolo.setChilometraggio(veicoloDTO.chilometraggio());
-        veicolo.setPosizione(veicoloDTO.posizione());
-        veicolo.setViaSede(veicoloDTO.viaSede());
         veicolo.setDocumentiAssicurativi(veicoloDTO.documentiAssicurativi());
         veicolo.setRevisione(veicoloDTO.revisione());
-        veicolo.setImmagini(veicoloDTO.immagini());
-        veicolo.setDataCreazioneVeicolo(LocalDateTime.now());
+        veicolo.setAbs(veicoloDTO.abs());
 
         return veicoloRepository.save(veicolo);
     }
@@ -91,46 +99,57 @@ public class VeicoloService {
 
         if (veicoloDTO.tipoVeicolo() == TipoVeicolo.AUTO && veicolo instanceof Auto) {
             Auto auto = (Auto) veicolo;
-            auto.setMotorizzazione(veicoloDTO.motorizzazione());
-            auto.setTrasmissione(veicoloDTO.trasmissione());
-            auto.setTrazione(veicoloDTO.trazione());
             auto.setPorte(veicoloDTO.porte());
             auto.setCapacitaBagagliaio(veicoloDTO.capacitaBagagliaio());
             auto.setAirbag(veicoloDTO.airbag());
-            auto.setAbs(veicoloDTO.abs());
             auto.setControlloStabilita(veicoloDTO.controlloStabilita());
             auto.setAriaCondizionata(veicoloDTO.ariaCondizionata());
             auto.setSistemaNavigazione(veicoloDTO.sistemaNavigazione());
             auto.setSistemaAudio(veicoloDTO.sistemaAudio());
             auto.setBluetooth(veicoloDTO.bluetooth());
             auto.setSediliRiscaldati(veicoloDTO.sediliRiscaldati());
+
         } else if (veicoloDTO.tipoVeicolo() == TipoVeicolo.MOTO && veicolo instanceof Moto) {
             Moto moto = (Moto) veicolo;
             moto.setBauletto(veicoloDTO.bauletto());
             moto.setParabrezza(veicoloDTO.parabrezza());
-            moto.setAbs(veicoloDTO.abs());
-            moto.setControlloTrattamento(veicoloDTO.controlloTrattamento());
         } else {
             throw new IllegalArgumentException("Tipo veicolo non supportato o mismatch con l'entità veicolo esistente");
         }
+
+        // <---------- Set Veicolo important ---------->
+        veicolo.setDataCreazioneVeicolo(LocalDateTime.now());
+        veicolo.setTipoVeicolo(veicoloDTO.tipoVeicolo());
+        veicolo.setDisponibilita(veicoloDTO.disponibilita());
+
+        // <---------- Sede Veicolo ---------->
+        veicolo.setNomeSede(veicoloDTO.nomeSede());
+        veicolo.setCittaSede(veicoloDTO.cittaSede());
+        veicolo.setViaSede(veicoloDTO.viaSede());
+        veicolo.setProvinciaSede(veicoloDTO.provinciaSede());
+        veicolo.setTelefonoSede(veicoloDTO.telefonoSede());
+        veicolo.setEmailSede(veicoloDTO.emailSede());
+        veicolo.setOrariSede(veicoloDTO.orariSede());
+
+        // <---------- Dati Veicolo ---------->
+        veicolo.setTarga(veicoloDTO.targa());
+        veicolo.setImmagini(veicoloDTO.immagini());
         veicolo.setMarca(veicoloDTO.marca());
         veicolo.setModello(veicoloDTO.modello());
         veicolo.setAnno(veicoloDTO.anno());
-        veicolo.setTarga(veicoloDTO.targa());
-        veicolo.setTipoVeicolo(veicoloDTO.tipoVeicolo());
         veicolo.setCategoria(veicoloDTO.categoria());
+        veicolo.setAlimentazione(veicoloDTO.alimentazione());
+        veicolo.setCambio(veicoloDTO.cambio());
+        veicolo.setTrazione(veicoloDTO.trazione());
         veicolo.setCilindrata(veicoloDTO.cilindrata());
-        veicolo.setPotenza(veicoloDTO.potenza());
+        veicolo.setPotenzaKw(veicoloDTO.potenzaKw());
         veicolo.setConsumoCarburante(veicoloDTO.consumoCarburante());
         veicolo.setPosti(veicoloDTO.posti());
         veicolo.setTariffaGiornaliera(veicoloDTO.tariffaGiornaliera());
-        veicolo.setDisponibilita(veicoloDTO.disponibilita());
         veicolo.setChilometraggio(veicoloDTO.chilometraggio());
-        veicolo.setPosizione(veicoloDTO.posizione());
-        veicolo.setViaSede(veicoloDTO.viaSede());
         veicolo.setDocumentiAssicurativi(veicoloDTO.documentiAssicurativi());
         veicolo.setRevisione(veicoloDTO.revisione());
-        veicolo.setImmagini(veicoloDTO.immagini());
+        veicolo.setAbs(veicoloDTO.abs());
 
         return veicoloRepository.save(veicolo);
     }

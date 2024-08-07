@@ -16,9 +16,9 @@ public class VeicoloSpecification {
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("marca")), "%" + marca.toLowerCase() + "%");
     }
 
-    public static Specification<Veicolo> hasPosizione(String posizione) {
+    public static Specification<Veicolo> hasCittaSede(String posizioneVeicolo) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("posizione")), "%" + posizione.toLowerCase() + "%");
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("cittaSede")), "%" + posizioneVeicolo.toLowerCase() + "%");
     }
 
     public static Specification<Veicolo> hasModello(String modello) {

@@ -82,7 +82,7 @@ public class VeicoloController {
             spec = spec.and(VeicoloSpecification.hasDisponibilita(disponibilita));
         }
         if (posizioneVeicolo != null) {
-            spec = spec.and(VeicoloSpecification.hasPosizione(posizioneVeicolo));
+            spec = spec.and(VeicoloSpecification.hasCittaSede(posizioneVeicolo));
         }
         if (targaVeicolo != null) {
             spec = spec.and(VeicoloSpecification.hasTarga(targaVeicolo));
@@ -138,7 +138,7 @@ public class VeicoloController {
     // <---------- Filtra Veicoli ---------->
     @GetMapping("/search")
     public Page<Veicolo> searchVeicoli(
-            @RequestParam(required = false) String posizione,
+            @RequestParam(required = false) String posizioneVeicolo,
             @RequestParam(required = false) TipoVeicolo tipoVeicolo,
             @RequestParam(required = false) String categoria,
             @RequestParam(required = false) Double minPrezzo,
@@ -151,8 +151,8 @@ public class VeicoloController {
 
         Specification<Veicolo> spec = Specification.where(null);
 
-        if (posizione != null) {
-            spec = spec.and(VeicoloSpecification.hasPosizione(posizione));
+        if (posizioneVeicolo != null) {
+            spec = spec.and(VeicoloSpecification.hasCittaSede(posizioneVeicolo));
         }
         if (tipoVeicolo != null) {
             spec = spec.and(VeicoloSpecification.hasTipoVeicolo(tipoVeicolo));

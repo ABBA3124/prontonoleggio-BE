@@ -19,25 +19,40 @@ public abstract class Veicolo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    // <---------- Set Veicolo important ---------->
+    private LocalDateTime dataCreazioneVeicolo;
+    @Enumerated(EnumType.STRING)
+    private TipoVeicolo tipoVeicolo;
+    @Enumerated(EnumType.STRING)
+    private Disponibilita disponibilita;
+
+    // <---------- Sede Veicolo ---------->
+    private String nomeSede;
+    private String cittaSede;
+    private String viaSede;
+    private String provinciaSede;
+    private String telefonoSede;
+    private String emailSede;
+    private String orariSede;
+
+    // <---------- Dati Veicolo ---------->
+    private String targa;
+    private String immagini;
     private String marca;
     private String modello;
     private int anno;
-    private String targa;
-    @Enumerated(EnumType.STRING)
-    private TipoVeicolo tipoVeicolo;
     private String categoria;
+    private String alimentazione;
+    private String cambio;
+    private String trazione;
     private int cilindrata;
-    private int potenza;
+    private int potenzaKw;
     private double consumoCarburante;
     private int posti;
     private double tariffaGiornaliera;
-    @Enumerated(EnumType.STRING)
-    private Disponibilita disponibilita;
     private int chilometraggio;
-    private String posizione;
-    private String viaSede;
     private String documentiAssicurativi;
     private String revisione;
-    private String immagini;
-    private LocalDateTime dataCreazioneVeicolo;
+    private boolean abs;
+
 }

@@ -13,13 +13,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "auto")
 public class Auto extends Veicolo {
 
-    private String motorizzazione;
-    private String trasmissione;
-    private String trazione;
     private int porte;
     private int capacitaBagagliaio;
     private int airbag;
-    private boolean abs;
     private boolean controlloStabilita;
     private boolean ariaCondizionata;
     private boolean sistemaNavigazione;

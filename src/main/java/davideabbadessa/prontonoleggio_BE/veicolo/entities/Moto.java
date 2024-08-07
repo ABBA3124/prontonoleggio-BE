@@ -15,6 +15,5 @@ public class Moto extends Veicolo {
 
     private boolean bauletto;
     private boolean parabrezza;
-    private boolean abs;
-    private boolean controlloTrattamento;
+   
 }
