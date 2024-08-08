@@ -23,13 +23,7 @@ public class ReviewController {
     private ReviewService reviewService;
 
 
-    // POST /recensioni/create
-    @PostMapping("/create")
-    public ResponseEntity<Review> createReview(@Validated @RequestBody ReviewDTO reviewDTO) {
-        Review review = reviewService.creaRecensione(reviewDTO);
-        return new ResponseEntity<>(review, HttpStatus.CREATED);
-    }
-
+    // <------------------ SUPER ADMIN ------------------>
     // GET /recensioni/user/{utenteId}
     @GetMapping("/user/{utenteId}")
     @PreAuthorize("hasRole('ROLE_SUPERADMIN')")
@@ -46,10 +40,25 @@ public class ReviewController {
         return new ResponseEntity<>(review, HttpStatus.OK);
     }
 
+    // <------------------ USER ------------------>
+    // POST /recensioni/create
+    @PostMapping("/crea")
+    public ResponseEntity<Review> createReview(@Validated @RequestBody ReviewDTO reviewDTO) {
+        Review review = reviewService.creaRecensione(reviewDTO);
+        return new ResponseEntity<>(review, HttpStatus.CREATED);
+    }
+
     // GET /recensioni/all
     @GetMapping("/all")
     public ResponseEntity<List<Review>> getAllReviews() {
         List<Review> reviews = reviewService.getAllRecensioni();
+        return new ResponseEntity<>(reviews, HttpStatus.OK);
+    }
+
+    // GET /recensioni/me
+    @GetMapping("/me")
+    public ResponseEntity<List<Review>> getMyReviews(@AuthenticationPrincipal Utente currentAuthenticatedUtente) {
+        List<Review> reviews = reviewService.getRecensioniByUtente(currentAuthenticatedUtente.getId());
         return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
@@ -58,12 +67,5 @@ public class ReviewController {
     public ResponseEntity<Review> updateReview(@PathVariable UUID recensioneId, @Validated @RequestBody ReviewDTO reviewDTO) {
         Review review = reviewService.updateRecensione(recensioneId, reviewDTO);
         return new ResponseEntity<>(review, HttpStatus.OK);
-    }
-
-    // GET /recensioni/me
-    @GetMapping("/me")
-    public ResponseEntity<List<Review>> getMyReviews(@AuthenticationPrincipal Utente currentAuthenticatedUtente) {
-        List<Review> reviews = reviewService.getRecensioniByUtente(currentAuthenticatedUtente.getId());
-        return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 }

@@ -10,6 +10,8 @@ import java.util.UUID;
 public record ReviewDTO(
         UUID utenteId,
 
+        UUID prenotazioneId,
+
         @Min(1) @Max(5)
         int rating,
 
