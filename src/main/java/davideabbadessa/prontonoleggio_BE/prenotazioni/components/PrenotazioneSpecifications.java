@@ -59,7 +59,7 @@ public class PrenotazioneSpecifications {
     public static Specification<Prenotazione> hasPosizione(String posizione) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("veicolo")
-                                          .get("posizione"), posizione);
+                                          .get("nomeSede"), posizione);
     }
 
     public static Specification<Prenotazione> hasTipoVeicolo(TipoVeicolo tipoVeicolo) {
