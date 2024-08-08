@@ -156,9 +156,14 @@ public class VeicoloService {
 
     // <---------- Get All Veicoli ---------->
     public Page<Veicolo> getAllVeicoli(Specification<Veicolo> spec, int pageNumber, int pageSize, String sortBy) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        String[] sortParams = sortBy.split(",");
+        String sortField = sortParams[0];
+        Sort.Direction sortDirection = sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1]) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortDirection, sortField));
         return veicoloRepository.findAll(spec, pageable);
     }
+
 
     // <---------- Cerca Veicolo by ID ---------->
     public Veicolo getVeicoloById(UUID id) {

@@ -71,7 +71,7 @@ public class VeicoloController {
             @RequestParam(required = false) String modelloVeicolo,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "dataCreazioneVeicolo") String sortBy) {
+            @RequestParam(defaultValue = "dataCreazioneVeicolo,desc") String sortBy) {
 
         Specification<Veicolo> spec = Specification.where(null);
 
@@ -93,8 +93,10 @@ public class VeicoloController {
         if (modelloVeicolo != null) {
             spec = spec.and(VeicoloSpecification.hasModello(modelloVeicolo));
         }
+
         return this.veicoloService.getAllVeicoli(spec, page, size, sortBy);
     }
+
 
     // <-------------------------------------- USER -------------------------------------->
 
