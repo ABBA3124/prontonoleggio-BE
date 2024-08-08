@@ -188,8 +188,14 @@ public class VeicoloService {
             List<UUID> veicoliNonDisponibili = prenotazioneRepository.findVeicoliNonDisponibili(dataInizio, dataFine);
             spec = spec.and(notInIds(veicoliNonDisponibili));
         }
+
+        String[] sortParams = sortBy.split(",");
+        String sortField = sortParams[0];
+        Sort.Direction sortDirection = sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1]) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortDirection, sortField));
+
         spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("disponibilita"), Disponibilita.DISPONIBILE));
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
         return veicoloRepository.findAll(spec, pageable);
     }
 

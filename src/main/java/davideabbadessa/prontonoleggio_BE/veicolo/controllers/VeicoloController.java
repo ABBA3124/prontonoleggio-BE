@@ -149,7 +149,8 @@ public class VeicoloController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFine,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "dataCreazioneVeicolo") String sortBy) {
+//            @RequestParam(defaultValue = "dataCreazioneVeicolo") String sortBy) {
+            @RequestParam(defaultValue = "dataCreazioneVeicolo,desc") String sortBy) {
 
         Specification<Veicolo> spec = Specification.where(null);
 
