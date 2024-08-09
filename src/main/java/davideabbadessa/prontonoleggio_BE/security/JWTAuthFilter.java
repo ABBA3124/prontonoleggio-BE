@@ -50,6 +50,8 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         AntPathMatcher pathMatcher = new AntPathMatcher();
         return pathMatcher.match("/auth/**", request.getServletPath()) ||
                 pathMatcher.match("/paypal/**", request.getServletPath()) ||
-                pathMatcher.match("/recensioni/all", request.getServletPath());
+                pathMatcher.match("/recensioni/all", request.getServletPath()) ||
+                pathMatcher.match("/veicoli/search", request.getServletPath());
+
     }
 }
