@@ -1,5 +1,6 @@
 package davideabbadessa.prontonoleggio_BE.utente.services;
 
+import davideabbadessa.prontonoleggio_BE.Mailgun.MailgunService;
 import davideabbadessa.prontonoleggio_BE.exceptions.BadRequestException;
 import davideabbadessa.prontonoleggio_BE.exceptions.NotFoundException;
 import davideabbadessa.prontonoleggio_BE.utente.entities.Utente;
@@ -25,6 +26,9 @@ public class UtenteService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private MailgunService mailgunService;
 
     // <-------------------------------------------- Get all Utenti -------------------------------------------->
     public Page<Utente> getAllUtenti(Specification<Utente> spec, int pageNumber, int pageSize, String sortBy) {
@@ -53,11 +57,40 @@ public class UtenteService {
     // <-------------------------------------------- Save Utente -------------------------------------------->
     public Utente saveUtente(NuovoUtenteDTO utenteDTO) {
         validateUtenteControlSave(null, utenteDTO);
+
+        //Creazione dell'utente
         Utente nuovoUtente = new Utente(utenteDTO);
         nuovoUtente.setPassword(passwordEncoder.encode(utenteDTO.password()));
         nuovoUtente.setAvatar("https://ui-avatars.com/api/?name=" + nuovoUtente.getNome() + "+" + nuovoUtente.getCognome() + "&background=1E90FF&color=fff");
-        return utenteRepository.save(nuovoUtente);
+
+        //Genera il token di conferma
+        String token = UUID.randomUUID()
+                           .toString();
+        nuovoUtente.setConfirmationToken(token);
+        nuovoUtente.setEmailConfirmed(false); // Inizialmente l'email non è confermata
+
+        //Salvataggio dell'utente nel database
+        Utente utenteSalvato = utenteRepository.save(nuovoUtente);
+
+        //Invio email di conferma
+        String subject = "Conferma la tua registrazione";
+        String text = "Benvenuto su Pronto Noleggio " + nuovoUtente.getNome() + ",\n\n" +
+                "Grazie per esserti registrato. Per favore conferma il tuo indirizzo email cliccando sul seguente link:\n" +
+                "http://localhost:12000/auth/conferma?token=" + token;
+
+        mailgunService.sendEmail(utenteSalvato.getEmail(), subject, text);
+
+        return utenteSalvato;
     }
+
+    public Utente getUtenteByToken(String token) {
+        return utenteRepository.findByConfirmationToken(token);
+    }
+
+    public void updateUtente(Utente utente) {
+        utenteRepository.save(utente);
+    }
+
 
     // <-------------------------------------------- Validazione Utente Controllo Per Save -------------------------------------------->
     private void validateUtenteControlSave(UUID userId, NuovoUtenteDTO utenteDTO) {

@@ -49,6 +49,8 @@ public class Utente implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
     private String avatar;
+    private String confirmationToken;
+    private boolean isEmailConfirmed;
 
     public Utente(NuovoUtenteDTO dto) {
         this.nome = dto.nome();

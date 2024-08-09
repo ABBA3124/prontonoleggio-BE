@@ -106,6 +106,19 @@
             <artifactId>checkout-sdk</artifactId>
             <version>1.0.3</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.konghq/unirest-java-core -->
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java-core</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.konghq/unirest-object-mappers-gson -->
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-object-mappers-gson</artifactId>
+            <version>4.2.9</version>
+        </dependency>
 
     </dependencies>
 

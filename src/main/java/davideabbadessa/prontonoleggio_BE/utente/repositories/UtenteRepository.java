@@ -26,4 +26,7 @@ public interface UtenteRepository extends JpaRepository<Utente, UUID>, JpaSpecif
     // Cerca Per Telefono
     Optional<Utente> findByTelefono(String telefono);
 
+    // Cerca Per Token di Conferma Email (per la conferma dell'account)
+    Utente findByConfirmationToken(String confirmationToken);
+
 }
