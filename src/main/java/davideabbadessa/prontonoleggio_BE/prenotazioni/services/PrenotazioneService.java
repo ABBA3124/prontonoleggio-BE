@@ -1,5 +1,6 @@
 package davideabbadessa.prontonoleggio_BE.prenotazioni.services;
 
+import davideabbadessa.prontonoleggio_BE.Mailgun.MailgunService;
 import davideabbadessa.prontonoleggio_BE.exceptions.BadRequestException;
 import davideabbadessa.prontonoleggio_BE.exceptions.NotFoundException;
 import davideabbadessa.prontonoleggio_BE.prenotazioni.entities.Prenotazione;
@@ -35,6 +36,9 @@ public class PrenotazioneService {
     @Autowired
     private UtenteRepository utenteRepository;
 
+    @Autowired
+    private MailgunService mailgunService;
+
     public Prenotazione creaPrenotazione(PrenotazioneDTO prenotazioneDTO) {
         Veicolo veicolo = veicoloRepository.findById(prenotazioneDTO.veicoloId())
                                            .orElseThrow(() -> new NotFoundException("Veicolo non trovato"));
@@ -52,7 +56,13 @@ public class PrenotazioneService {
         prenotazione.setDataInizio(prenotazioneDTO.dataInizio());
         prenotazione.setDataFine(prenotazioneDTO.dataFine());
 
-        return prenotazioneRepository.save(prenotazione);
+        // Salvataggio della prenotazione nel database
+        Prenotazione prenotazioneSalvata = prenotazioneRepository.save(prenotazione);
+
+        // Invio dell'email di conferma
+        mailgunService.sendPrenotazioneConfermaEmail(utente, prenotazioneSalvata);
+
+        return prenotazioneSalvata;
     }
 
     public boolean isVeicoloDisponibile(UUID veicoloId, LocalDate dataInizio, LocalDate dataFine) {

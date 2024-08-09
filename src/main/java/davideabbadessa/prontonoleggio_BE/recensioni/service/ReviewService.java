@@ -1,5 +1,6 @@
 package davideabbadessa.prontonoleggio_BE.recensioni.service;
 
+import davideabbadessa.prontonoleggio_BE.Mailgun.MailgunService;
 import davideabbadessa.prontonoleggio_BE.exceptions.NotFoundException;
 import davideabbadessa.prontonoleggio_BE.prenotazioni.entities.Prenotazione;
 import davideabbadessa.prontonoleggio_BE.prenotazioni.repositories.PrenotazioneRepository;
@@ -29,6 +30,9 @@ public class ReviewService {
     @Autowired
     private PrenotazioneRepository prenotazioneRepository;
 
+    @Autowired
+    private MailgunService mailgunService;
+
     public Review creaRecensione(ReviewDTO reviewDTO) {
         Authentication authentication = SecurityContextHolder.getContext()
                                                              .getAuthentication();
@@ -50,7 +54,14 @@ public class ReviewService {
         review.setTitolo(reviewDTO.titolo());
         review.setCommento(reviewDTO.commento());
         review.setDataCreazione(LocalDateTime.now());
-        return reviewRepository.save(review);
+
+        // Salvataggio della recensione nel database
+        Review reviewSalvata = reviewRepository.save(review);
+
+        // Invio dell'email di conferma
+        mailgunService.sendReviewConfermaEmail(utente, reviewSalvata);
+
+        return reviewSalvata;
     }
 
     public List<Review> getRecensioniByUtente(UUID utenteId) {
