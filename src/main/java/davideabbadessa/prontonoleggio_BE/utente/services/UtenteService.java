@@ -74,7 +74,7 @@ public class UtenteService {
 
         //Invio email di conferma
         String subject = "Conferma la tua registrazione";
-        String text = "Benvenuto su Pronto Noleggio " + nuovoUtente.getNome() + ",\n\n" +
+        String text = "Ciao " + nuovoUtente.getNome() + " Benvenuto su Pronto Noleggio" + ",\n\n" +
                 "Grazie per esserti registrato. Per favore conferma il tuo indirizzo email cliccando sul seguente link:\n" +
                 "http://localhost:12000/auth/conferma?token=" + token;
 
