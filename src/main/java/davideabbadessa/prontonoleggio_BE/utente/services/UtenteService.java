@@ -142,8 +142,16 @@ public class UtenteService {
         found.setCap(body.cap());
         found.setProvincia(body.provincia());
         found.setNazione(body.nazione());
-        found.setAvatar("https://ui-avatars.com/api/?name=" + body.nome() + "+" + body.cognome());
+        found.setAvatar(body.avatar());
 
+        if (body.avatar() == null || body.avatar()
+                                         .trim()
+                                         .isEmpty()) {
+            String defaultAvatarUrl = "https://ui-avatars.com/api/?name=" + found.getNome() + "+" + found.getCognome() + "&background=1E90FF&color=fff";
+            found.setAvatar(defaultAvatarUrl);
+        } else {
+            found.setAvatar(body.avatar());
+        }
         return utenteRepository.save(found);
     }
 

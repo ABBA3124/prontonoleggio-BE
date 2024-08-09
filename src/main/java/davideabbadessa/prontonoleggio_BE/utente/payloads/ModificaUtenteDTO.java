@@ -58,7 +58,9 @@ public record ModificaUtenteDTO(
         @NotBlank(message = "La nazione non può essere vuota!")
         @Size(min = 2, max = 50, message = "La nazione deve essere tra 2 e 50 caratteri")
         @Pattern(regexp = "^[a-zA-Z]*$", message = "La nazione non può contenere numeri o caratteri speciali!")
-        String nazione
+        String nazione,
+
+        String avatar
 
 ) {
 }
