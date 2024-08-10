@@ -6,7 +6,7 @@ import davideabbadessa.prontonoleggio_BE.prenotazioni.entities.Prenotazione;
 import davideabbadessa.prontonoleggio_BE.prenotazioni.repositories.PrenotazioneRepository;
 import davideabbadessa.prontonoleggio_BE.recensioni.entities.Review;
 import davideabbadessa.prontonoleggio_BE.recensioni.payload.ReviewDTO;
-import davideabbadessa.prontonoleggio_BE.recensioni.repositorie.ReviewRepository;
+import davideabbadessa.prontonoleggio_BE.recensioni.repositories.ReviewRepository;
 import davideabbadessa.prontonoleggio_BE.utente.entities.Utente;
 import davideabbadessa.prontonoleggio_BE.utente.repositories.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;

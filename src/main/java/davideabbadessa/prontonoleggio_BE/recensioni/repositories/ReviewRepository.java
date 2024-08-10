@@ -1,4 +1,4 @@
-package davideabbadessa.prontonoleggio_BE.recensioni.repositorie;
+package davideabbadessa.prontonoleggio_BE.recensioni.repositories;
 
 import davideabbadessa.prontonoleggio_BE.recensioni.entities.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
