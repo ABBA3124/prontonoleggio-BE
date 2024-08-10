@@ -65,7 +65,7 @@ public class ReviewService {
     }
 
     public List<Review> getRecensioniByUtente(UUID utenteId) {
-        return reviewRepository.findAllByUtenteId(utenteId);
+        return reviewRepository.findAllByUtenteIdOrderByDataCreazioneDesc(utenteId);
     }
 
     public Review getRecensioneById(UUID recensioneId) {
@@ -74,7 +74,7 @@ public class ReviewService {
     }
 
     public List<Review> getAllRecensioni() {
-        return reviewRepository.findAll();
+        return reviewRepository.findAllByOrderByDataCreazioneDesc();
     }
 
     public Review updateRecensione(UUID recensioneId, ReviewDTO reviewDTO) {
